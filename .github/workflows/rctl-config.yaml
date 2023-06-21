@@ -11,14 +11,14 @@ on:
         default: 'warning'
       tags:
         description: 'Test scenario tags'
-env:
-  RCTL_CONFIG: ${{ secrets.RCTL_CONFIG }}
 jobs:
   printInputs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Run script file
+      env:
+        RCTL_CONFIG: ${{ secrets.RCTL_CONFIG }}
       run: |
          chmod +x ./rctl_setup.sh
          ./rctl_setup.sh
