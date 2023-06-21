@@ -1,4 +1,4 @@
-name: manual and push example
+name: rctl config example
 on:
   schedule:
     # Runs "at minute 55 past every hour"
@@ -11,6 +11,8 @@ on:
         default: 'warning'
       tags:
         description: 'Test scenario tags'
+env:
+  RCTL_CONFIG: ${{ secrets.RCTL_CONFIG }}
 jobs:
   printInputs:
     runs-on: ubuntu-latest
