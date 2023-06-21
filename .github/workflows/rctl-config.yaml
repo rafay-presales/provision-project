@@ -21,6 +21,7 @@ jobs:
       with:
         rafay-api-key: ${{ secrets.RCTL_API_KEY }}
         rafay-api-secret: ${{ secrets.RCTL_API_SECRET }}
+        rafay-project: 'dev-1'
     - name: Run script file
-      run: rctl
+      run: rctl get clusters
       shell: bash
