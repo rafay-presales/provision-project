@@ -3,4 +3,5 @@ curl -sL https://s3-us-west-2.amazonaws.com/rafay-prod-cli/publish/rctl-linux-am
 tar xvf ./rctl.tar.bz2
 chmod 755 ./rctl
 rm ./rctl.tar.bz2
-./rctl
+./rctl config init $RCTL_CONFIG
+./rctl get projects --v3
