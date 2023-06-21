@@ -1,8 +1,8 @@
 name: create cluster from template
 on:
   schedule:
-    # Runs "every day at 18:45"
-    - cron: '45 18 * * *' 
+    # Runs "every day at 18:45 EDT"
+    - cron: '45 22 * * *' 
   workflow_dispatch:
     inputs:
       logLevel:
@@ -25,5 +25,6 @@ jobs:
         RCTL_REST_ENDPOINT: 'console.rafay.dev'
         RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
+        RCTL_PROJECT: ${{ inputs.project }}
       run: rctl apply -f gke/cluster.yaml
       shell: bash
