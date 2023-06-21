@@ -9,8 +9,9 @@ on:
         description: 'Log level'     
         required: true
         default: 'warning'
-      tags:
-        description: 'Test scenario tags'
+      project:
+        description: 'project'
+        default: "default-project"
 jobs:
   printInputs:
     runs-on: ubuntu-latest
@@ -19,6 +20,11 @@ jobs:
     - name: Run script file
       env:
         RCTL_CONFIG: ${{ secrets.RCTL_CONFIG }}
+        RCTL_REST_ENDPOINT: "console.rafay.dev"
+        RCTL_OPS_ENDPOINT: "console.rafay.dev"
+        RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
+        RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
+        RCTL_PROJECT: "defaultproject"
       run: |
          chmod +x ./rctl_setup.sh
          ./rctl_setup.sh
