@@ -1,0 +1,27 @@
+name: delete cluster
+on:
+  schedule:
+    # Runs "every day at 18:45"
+    - cron: '25 23 * * *' 
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      project:
+        description: 'project'
+        default: "defaultproject"
+jobs:
+  create-cluster:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup rctl
+      uses: rafay-presales/rctl-setup@main
+    - name: delete-cluster
+      env:
+        RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
+        RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
+        RCTL_PROJECT: ${{ inputs.project }}
+      run: rctl delete cluster gke-from-cluster-tempate
+      shell: bash
