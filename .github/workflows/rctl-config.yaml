@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: rafay/presales/rctl-setup@main
+    - uses: rafay-presales/rctl-setup@main
       with:
         rafay-api-key: ${{ secrets.RCTL_API_KEY }}
         rafay-api-secret: ${{ secrets.RCTL_API_SECRET }}
