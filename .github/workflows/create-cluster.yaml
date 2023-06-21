@@ -1,4 +1,4 @@
-name: rctl config example
+name: create cluster from template
 on:
   schedule:
     # Runs "every day at 02:05"
