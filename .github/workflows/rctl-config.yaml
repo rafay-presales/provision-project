@@ -13,7 +13,7 @@ on:
         description: 'project'
         default: "defaultproject"
 jobs:
-  printInputs:
+  create-cluster:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -26,5 +26,5 @@ jobs:
         RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
         RCTL_PROJECT: 'dev-1'
-      run: rctl apply -f ./gke/gke-from-cluster-template.yaml
+      run: rctl apply -f gke/gke-from-cluster-template.yaml
       shell: bash
