@@ -16,9 +16,11 @@ jobs:
   printInputs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: rafay-presales/rctl-setup@main
-    - name: Run script file
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup rctl
+      uses: rafay-presales/rctl-setup@main
+    - name: create-gke-cluster-from-template
       env:
         RCTL_REST_ENDPOINT: 'console.rafay.dev'
         RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
