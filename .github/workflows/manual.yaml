@@ -1,8 +1,8 @@
 name: manual and push example
 on:
-  push:
-    branches:
-      - main 
+  schedule:
+    # Runs "at minute 55 past every hour"
+    - cron: '55 * * * *' 
   workflow_dispatch:
     inputs:
       logLevel:
