@@ -1,4 +1,8 @@
-on: 
+name: manual and push example
+on:
+  push:
+    branches:
+      - main 
   workflow_dispatch:
     inputs:
       logLevel:
