@@ -1,5 +1,4 @@
 kind: Cluster
-apiVersion: infra.k8smgmt.io/v3
 metadata:
  description: ""
  name: gke-from-cluster-tempate
