@@ -1,0 +1,13 @@
+kind: Cluster
+apiVersion: infra.k8smgmt.io/v3
+metadata:
+ description: ""
+ name: gke-from-cluster-tempate
+ project: defaultproject
+spec:
+ type: Gke
+ clusterTemplateRef:
+   name: gke-multiarch
+   version: v8
+ values:
+   spec_blueprint_version: v6
