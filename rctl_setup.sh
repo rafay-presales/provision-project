@@ -4,4 +4,4 @@ tar xvf ./rctl.tar.bz2
 chmod 755 ./rctl
 rm ./rctl.tar.bz2
 ./rctl config init
-./rctl get clusters
+./rctl
