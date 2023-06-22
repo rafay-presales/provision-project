@@ -2,7 +2,7 @@ name: create cluster from template
 on:
   schedule:
     # Runs "every day at 18:45 EDT"
-    - cron: '50 22 * * *' 
+    - cron: '10 3 * * 1-5' 
   workflow_dispatch:
     inputs:
       logLevel:
