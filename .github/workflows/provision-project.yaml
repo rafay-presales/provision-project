@@ -33,7 +33,7 @@ jobs:
       project: ${{  needs.init-env.outputs.PROJECT }}
       
   create-cluster-template:
-    needs: [create-project]
+    needs: [init-env,create-project]
     uses: ./.github/workflows/create-cluster-template.yaml
     secrets: inherit
     with:
