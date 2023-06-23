@@ -1,0 +1,26 @@
+name: create project
+on:
+  schedule:
+    # Runs "every day at 06:30 EDT"
+    - cron: '10 3 * * 1-5' 
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+jobs:
+  create-cluster:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup rctl
+      uses: rafay-presales/rctl-setup@main
+    - name: create-project
+      env:
+        RCTL_REST_ENDPOINT: 'console.rafay.dev'
+        RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
+        RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
+      run: rctl apply -f project.yaml
+      shell: bash
