@@ -1,0 +1,7 @@
+apiVersion: system.k8smgmt.io/v3
+kind: Project
+metadata:
+  description: demo_project
+  name: demo-project
+spec:
+  default: false
