@@ -25,7 +25,7 @@ jobs:
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
         RCTL_PROJECT: ${{ inputs.project }}
       run: |
-        yq e -i '.metadata.project = "$RCTL_PROJECT"' gke/blueprint.yaml
+        yq e -i '.metadata.project = $RCTL_PROJECT' gke/blueprint.yaml
         more gke/blueprint.yaml
         rctl apply -f gke/blueprint.yaml
       shell: bash
