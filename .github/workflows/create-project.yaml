@@ -10,7 +10,7 @@ on:
         required: true
         default: 'warning'
 jobs:
-  create-cluster:
+  create-project:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
