@@ -18,14 +18,14 @@ jobs:
       uses: actions/checkout@v3
     - name: Setup rctl
       uses: rafay-presales/rctl-setup@main
-    - name: create-cluster-template
+    - name: create-blueprint
       env:
         RCTL_REST_ENDPOINT: 'console.rafay.dev'
         RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
         RCTL_PROJECT: ${{ inputs.project }}
       run: |
-        yq e -i '.metadata.project = $RCTL_PROJECT' gke/blueprint.yaml
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" gke/blueprint.yaml
         more gke/blueprint.yaml
         rctl apply -f gke/blueprint.yaml
       shell: bash
