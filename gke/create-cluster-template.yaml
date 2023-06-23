@@ -1,0 +1,6 @@
+kind: ClusterTemplate
+apiVersion: infra.k8smgmt.io/v3
+metadata:
+  name: presales-gke-cluster-template
+  description: 'GKE '
+  clusterType: Gke
