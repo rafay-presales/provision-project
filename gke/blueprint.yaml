@@ -2,6 +2,7 @@ apiVersion: infra.k8smgmt.io/v3
 kind: Blueprint
 metadata:
   name: gke-blueprint
+  project: 
 spec:
   base:
     name: default-gke
