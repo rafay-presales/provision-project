@@ -1,0 +1,29 @@
+name: Call a reusable workflow
+env:
+  PROJECT: ${{ github.event.inputs.project || 'defaultproject' }}
+on:
+  schedule:
+    # Runs "every day at 06:30 EDT"
+    - cron: '30 2 * * 1-5' 
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      project:
+        description: 'project'
+        default: "defaultproject"
+
+jobs:
+  create-project:
+    uses: ./.github/workflows/create-project.yaml
+    with:
+      secrets: inherit
+      project: ${{ env.PROJECT }}
+      
+  create-cluster-template:
+    uses: ./.github/workflows/create-cluster-template.yaml
+    with:
+      secrets: inherit
+      project: ${{ env.PROJECT }}
