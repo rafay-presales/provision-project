@@ -18,13 +18,20 @@ env:
   PROJECT: ${{ inputs.project || 'demo-1' }}
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ env.PROJECT }}
+      
   create-project:
+    needs: [prepare]
     uses: ./.github/workflows/create-project.yaml
     secrets: inherit
     with:
       project: ${{ env.PROJECT }}
       
   create-cluster-template:
+    needs: [create-project]
     uses: ./.github/workflows/create-cluster-template.yaml
     secrets: inherit
     with:
