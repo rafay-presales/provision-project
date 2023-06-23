@@ -1,6 +1,5 @@
 name: provision project demo
-env:
-  PROJECT: ${{ github.event.inputs.project || 'defaultproject' }}
+
 on:
   schedule:
     # Runs "every day at 06:30 EDT"
@@ -14,6 +13,9 @@ on:
       project:
         description: 'project'
         default: "defaultproject"
+
+env:
+  PROJECT: ${{ github.event.inputs.project || 'defaultproject' }}
 
 jobs:
   create-project:
