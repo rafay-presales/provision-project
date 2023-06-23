@@ -2,3 +2,26 @@ apiVersion: infra.k8smgmt.io/v3
 kind: Blueprint
 metadata:
   name: gke-blueprint
+spec:
+  base:
+    name: default-gke
+  customAddons:
+  - name: secrets-store-csi-driver-provider-gcp
+    version: v2
+  defaultAddons:
+    enableIngress: true
+    enableLogging: false
+    enableMonitoring: true
+    enableVM: false
+    secrets-store-csi-driver: {}
+  drift:
+    enabled: true
+    action: notify
+  opaPolicy:
+    enabled: false
+  placement: {}
+  sharing:
+    enabled: false
+  version: v1
+  networkPolicy:
+    enabled: false
