@@ -1,4 +1,4 @@
-name: Call a reusable workflow
+name: provision project demo
 env:
   PROJECT: ${{ github.event.inputs.project || 'defaultproject' }}
 on:
