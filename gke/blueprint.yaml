@@ -5,6 +5,8 @@ metadata:
 spec:
   base:
     name: default-gke
+  version: v1
+  type: custom
   customAddons:
   - name: secrets-store-csi-driver-provider-gcp
     version: v2
@@ -22,6 +24,5 @@ spec:
   placement: {}
   sharing:
     enabled: false
-  version: v1
   networkPolicy:
     enabled: false
