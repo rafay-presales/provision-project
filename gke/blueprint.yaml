@@ -10,7 +10,7 @@ spec:
     version: v2
   defaultAddons:
     enableIngress: true
-    enableLogging: false
+    enableLogging: true
     enableMonitoring: true
     enableVM: false
     secrets-store-csi-driver: {}
