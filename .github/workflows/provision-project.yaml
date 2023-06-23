@@ -32,8 +32,15 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       
-  create-cluster-template:
+  create-blueprint:
     needs: [init-env,create-project]
+    uses: ./.github/workflows/create-blueprint.yaml
+    secrets: inherit
+    with:
+      project: ${{  needs.init-env.outputs.PROJECT }}
+      
+  create-cluster-template:
+    needs: [init-env,create-blueprint]
     uses: ./.github/workflows/create-cluster-template.yaml
     secrets: inherit
     with:
