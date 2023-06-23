@@ -15,7 +15,7 @@ on:
         default: "demo-${{ github.run.number }}"
 
 env:
-  PROJECT: ${{ github.event.inputs.project || 'demo-${{ github.run.number }}' }}
+  PROJECT: ${{ github.event.inputs.project || 'demo-'+${{ github.run.number }} }}
 
 jobs:
   init-env:
