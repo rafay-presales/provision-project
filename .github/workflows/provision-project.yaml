@@ -15,7 +15,7 @@ on:
         default: "demo-1"
 
 env:
-  PROJECT: ${{ inputs.project || 'demo-1' }}
+  PROJECT: demo-1
 
 jobs:
   init-env:
