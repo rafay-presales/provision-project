@@ -1,0 +1,151 @@
+kind: ClusterTemplateSnapshot
+apiVersion: infra.k8smgmt.io/v3
+metadata:
+  description: ""
+  name: v1
+  templateName: presales-gke-cluster-template
+parameters:
+  spec_blueprint_name:
+    default: gke-multiarch-blueprint
+    override:
+      allow: false
+      values: []
+  spec_blueprint_version:
+    default: v7
+    override:
+      allow: true
+      values: []
+  spec_config_controlPlaneVersion:
+    default: "1.24"
+    override:
+      allow: true
+      values: []
+  spec_config_feature_cloudLoggingComponents:
+    default:
+    - WORKLOADS
+    - SYSTEM_COMPONENTS
+    override:
+      allow: true
+      values: []
+  spec_config_feature_cloudMonitoringComponents:
+    default:
+    - ""
+    override:
+      allow: true
+      values: []
+  spec_config_feature_enableCloudLogging:
+    default: true
+    override:
+      allow: true
+      values: []
+  spec_config_feature_enableCloudMonitoring:
+    default: true
+    override:
+      allow: true
+      values: []
+  spec_config_feature_enableFilestoreCSIDriver:
+    default: null
+    override:
+      allow: true
+      values: []
+  spec_config_location_region_region:
+    default: us-central1
+    override:
+      allow: true
+      values: []
+  spec_config_location_region_zone:
+    default: us-central1-b
+    override:
+      allow: true
+      values: []
+  spec_config_location_type:
+    default: zonal
+    override:
+      allow: true
+      values: []
+  spec_config_location_zone:
+    default: us-central1-b
+    override:
+      allow: true
+      values: []
+  spec_config_nodePools_0_autoScaling_minNodes:
+    default: 1
+    override:
+      allow: true
+      values: []
+  spec_config_nodePools_0_machineConfig_bootDiskSize:
+    default: 50
+    override:
+      allow: true
+      values: []
+  spec_config_nodePools_0_machineConfig_bootDiskType:
+    default: pd-standard
+    override:
+      allow: true
+      values: []
+  spec_config_nodePools_0_machineConfig_machineType:
+    default: e2-standard-4
+    override:
+      allow: true
+      values: []
+  spec_config_nodePools_0_name:
+    default: amd-nodepool
+    override:
+      allow: true
+      values: []
+  spec_config_nodePools_0_nodeVersion:
+    default: "1.24"
+    override:
+      allow: true
+      values: []
+  spec_config_nodePools_0_size:
+    default: 1
+    override:
+      allow: true
+      values: []
+spec:
+  blueprint:
+    name: '{{ spec_blueprint_name }}'
+    version: '{{ spec_blueprint_version }}'
+  cloudCredentials: presales-gcp-cluster-provisioning
+  config:
+    controlPlaneVersion: '{{ spec_config_controlPlaneVersion }}'
+    feature:
+      cloudLoggingComponents: '{{ spec_config_feature_cloudLoggingComponents }}'
+      cloudMonitoringComponents: '{{ spec_config_feature_cloudMonitoringComponents
+        }}'
+      enableCloudLogging: '{{ spec_config_feature_enableCloudLogging }}'
+      enableCloudMonitoring: '{{ spec_config_feature_enableCloudMonitoring }}'
+      enableComputeEnginePersistentDiskCSIDriver: true
+      enableFilestoreCSIDriver: '{{ spec_config_feature_enableFilestoreCSIDriver }}'
+    location:
+      defaultNodeLocations: []
+      region:
+        region: '{{ spec_config_location_region_region }}'
+        zone: '{{ spec_config_location_region_zone }}'
+      type: '{{ spec_config_location_type }}'
+      zone: '{{ spec_config_location_zone }}'
+    network:
+      enableVPCNativeTraffic: true
+      maxPodsPerNode: 110
+      name: default
+      networkAccess:
+        privacy: public
+      nodeSubnetName: default
+    nodePools:
+    - autoScaling:
+        maxNodes: 5
+        minNodes: '{{ spec_config_nodePools_0_autoScaling_minNodes }}'
+      machineConfig:
+        bootDiskSize: '{{ spec_config_nodePools_0_machineConfig_bootDiskSize }}'
+        bootDiskType: '{{ spec_config_nodePools_0_machineConfig_bootDiskType }}'
+        imageType: COS_CONTAINERD
+        machineType: '{{ spec_config_nodePools_0_machineConfig_machineType }}'
+      name: '{{ spec_config_nodePools_0_name }}'
+      nodeVersion: '{{ spec_config_nodePools_0_nodeVersion }}'
+      size: '{{ spec_config_nodePools_0_size }}'
+    preBootstrapCommands: []
+    project: demos-249423
+    security:
+      enableWorkloadIdentity: true
+  type: Gke
