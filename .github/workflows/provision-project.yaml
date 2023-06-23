@@ -20,12 +20,12 @@ env:
 jobs:
   create-project:
     uses: ./.github/workflows/create-project.yaml
+    secrets: inherit
     with:
-      secrets: inherit
       project: ${{ env.PROJECT }}
       
   create-cluster-template:
     uses: ./.github/workflows/create-cluster-template.yaml
+    secrets: inherit
     with:
-      secrets: inherit
       project: ${{ env.PROJECT }}
