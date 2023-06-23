@@ -21,7 +21,7 @@ jobs:
   init-env:
     runs-on: ubuntu-latest
     outputs:
-      image: ${{ env.PROJECT }}
+      PROJECT: ${{ env.PROJECT }}
     steps:
       - run: echo "null"
       
@@ -37,4 +37,4 @@ jobs:
     uses: ./.github/workflows/create-cluster-template.yaml
     secrets: inherit
     with:
-      project: ${{ env.PROJECT }}
+      project: ${{  needs.init-env.outputs.PROJECT }}
