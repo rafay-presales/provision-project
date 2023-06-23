@@ -18,13 +18,15 @@ env:
   PROJECT: ${{ inputs.project || 'demo-1' }}
 
 jobs:
-  prepare:
+  init-env:
     runs-on: ubuntu-latest
     outputs:
       image: ${{ env.PROJECT }}
+    steps:
+      - run: echo "null"
       
   create-project:
-    needs: [prepare]
+    needs: [init-env]
     uses: ./.github/workflows/create-project.yaml
     secrets: inherit
     with:
