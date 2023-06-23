@@ -12,10 +12,10 @@ on:
         default: 'warning'
       project:
         description: 'project'
-        default: "demo-$GITHUB_RUN_NUMBER"
+        default: "demo-1"
 
 env:
-  PROJECT: ${{ github.event.inputs.project || 'demo-$GITHUB_RUN_NUMBER' }}
+  PROJECT: ${{ github.event.inputs.project || 'demo-1' }}
 
 jobs:
   init-env:
