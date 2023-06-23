@@ -12,10 +12,10 @@ on:
         default: 'warning'
       project:
         description: 'project'
-        default: "defaultproject"
+        default: "demo-1"
 
 env:
-  PROJECT: ${{ github.event.inputs.project || 'defaultproject' }}
+  PROJECT: ${{ inputs.project || 'demo-1' }}
 
 jobs:
   create-project:
