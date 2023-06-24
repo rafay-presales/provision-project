@@ -2,7 +2,6 @@ apiVersion: infra.k8smgmt.io/v3
 kind: Blueprint
 metadata:
   name: gke-blueprint
-  project: 
 spec:
   base:
     name: default-gke
@@ -25,13 +24,12 @@ spec:
   drift:
     enabled: true
     action: Notify
+  opaPolicy:
+    enabled: false
   placement:
     autoPublish: true
     fleetValues:
     - gke-presales-cluster
-  opaPolicy:
-    enabled: false
-  placement: {}
   sharing:
     enabled: false
   networkPolicy:
