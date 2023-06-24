@@ -6,12 +6,12 @@ metadata:
   templateName: presales-gke-cluster-template
 parameters:
   spec_blueprint_name:
-    default: gke-multiarch-blueprint
+    default: gke-blueprint
     override:
       allow: false
       values: []
   spec_blueprint_version:
-    default: v7
+    default: v1
     override:
       allow: true
       values: []
