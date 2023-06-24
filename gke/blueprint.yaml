@@ -6,20 +6,29 @@ metadata:
 spec:
   base:
     name: default-gke
+    version: 1.24.0
   version: v1
   type: custom
   customAddons:
   - name: secrets-store-csi-driver-provider-gcp
-    version: v2
+    version: v1
   defaultAddons:
+    csiSecretStoreConfig:
+      providers: {}
+    enableCsiSecretStore: true
     enableIngress: true
     enableLogging: true
     enableMonitoring: true
-    enableVM: false
-    secrets-store-csi-driver: {}
+    monitoring:
+      metricsServer:
+        enabled: true
   drift:
     enabled: true
-    action: notify
+    action: Notify
+  placement:
+    autoPublish: true
+    fleetValues:
+    - gke-presales-cluster
   opaPolicy:
     enabled: false
   placement: {}
