@@ -107,7 +107,7 @@ spec:
   blueprint:
     name: '{{ spec_blueprint_name }}'
     version: '{{ spec_blueprint_version }}'
-  cloudCredentials: presales-gcp-cluster-provisioning
+  cloudCredentials: gcp-demo-credentials
   config:
     controlPlaneVersion: '{{ spec_config_controlPlaneVersion }}'
     feature:
