@@ -26,6 +26,5 @@ jobs:
         RCTL_PROJECT: ${{ inputs.project }}
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" gke/blueprint.yaml
-        more gke/blueprint.yaml
         rctl apply -f gke/blueprint.yaml
       shell: bash
