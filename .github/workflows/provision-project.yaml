@@ -73,3 +73,10 @@ jobs:
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
+      
+  create-cluster:
+    needs: [init-env,create-cluster-template-snapshot]
+    uses: ./.github/workflows/create-cluster.yaml
+    secrets: inherit
+    with:
+      project: ${{  needs.init-env.outputs.PROJECT }}
