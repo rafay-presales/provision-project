@@ -6,6 +6,6 @@ spec:
  type: Gke
  clusterTemplateRef:
    name: gke-multiarch
-   version: v8
+   version: v1
  values:
-   spec_blueprint_version: v6
+   spec_blueprint_version: v1
