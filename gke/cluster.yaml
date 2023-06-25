@@ -2,7 +2,6 @@ kind: Cluster
 metadata:
  description: ""
  name: gke-from-cluster-tempate
- project: defaultproject
 spec:
  type: Gke
  clusterTemplateRef:
