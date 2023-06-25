@@ -36,5 +36,5 @@ jobs:
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" gke/cluster.yaml
         yq e -i ".metadata.name = \"$RCTL_PROJECT-gke-1\"" gke/cluster.yaml
-        rctl delete -f gke/cluster.yam -y
+        rctl delete -f gke/cluster.yaml -y
       shell: bash
