@@ -1,0 +1,16 @@
+apiVersion: infra.k8smgmt.io/v3
+kind: Addon
+metadata:
+  name: secrets-store-csi-driver-provider-gcp
+  project: defaultproject
+spec:
+  artifact:
+    artifact:
+      paths:
+      - name: deploy/provider-gcp-plugin.yaml
+      repository: secrets-store-csi-driver-provider-gcp
+      revision: main
+    type: Yaml
+  namespace: kube-system
+  sharing: {}
+  version: v1
