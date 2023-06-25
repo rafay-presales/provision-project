@@ -39,6 +39,13 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       
+  create-addon:
+    needs: [init-env,create-repository]
+    uses: ./.github/workflows/create-addon.yaml
+    secrets: inherit
+    with:
+      project: ${{  needs.init-env.outputs.PROJECT }}
+      
   create-credential:
     needs: [init-env,create-project]
     uses: ./.github/workflows/create-credential.yaml
@@ -47,7 +54,7 @@ jobs:
       project: ${{  needs.init-env.outputs.PROJECT }}
       
   create-blueprint:
-    needs: [init-env,create-project]
+    needs: [init-env,create-addon]
     uses: ./.github/workflows/create-blueprint.yaml
     secrets: inherit
     with:
