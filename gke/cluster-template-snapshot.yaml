@@ -29,7 +29,8 @@ parameters:
       values: []
   spec_config_feature_cloudMonitoringComponents:
     default:
-    - ""
+    - WORKLOADS
+    - SYSTEM_COMPONENTS
     override:
       allow: true
       values: []
