@@ -2,7 +2,7 @@ name: delete cluster
 on:
   schedule:
     # Runs "every day at 10:30 EDT"
-    - cron: '30 18 * * 2-6' 
+    - cron: '30 18 * * 2-6'
   workflow_dispatch:
     inputs:
       logLevel:
@@ -11,7 +11,11 @@ on:
         default: 'warning'
       project:
         description: 'project'
-        default: "defaultproject"
+        default: "demo-1"
+
+env:
+  PROJECT: ${{ github.event.inputs.project || 'demo-1' }}
+
 jobs:
   create-cluster:
     runs-on: ubuntu-latest
