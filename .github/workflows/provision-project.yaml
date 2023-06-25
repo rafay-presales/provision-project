@@ -39,8 +39,15 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       
+  create-namespace:
+    needs: [init-env,create-project]
+    uses: ./.github/workflows/create-namespace.yaml
+    secrets: inherit
+    with:
+      project: ${{  needs.init-env.outputs.PROJECT }}
+      
   create-addon:
-    needs: [init-env,create-repository]
+    needs: [init-env,create-repository,create-namespace]
     uses: ./.github/workflows/create-addon.yaml
     secrets: inherit
     with:
