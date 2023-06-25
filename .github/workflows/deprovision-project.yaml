@@ -1,0 +1,40 @@
+name: deprovision project demo
+
+on:
+  schedule:
+    # Runs "every day at 10:30 EDT"
+    - cron: '30 18 * * 0-6' 
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      project:
+        description: 'project'
+        default: "demo-1"
+
+env:
+  PROJECT: ${{ github.event.inputs.project || 'demo-1' }}
+
+jobs:
+  init-env:
+    runs-on: ubuntu-latest
+    outputs:
+      PROJECT: ${{ env.PROJECT }}
+    steps:
+      - run: echo "null"
+      
+  delete-cluster:
+    needs: [init-env]
+    uses: ./.github/workflows/delete-cluster.yaml
+    secrets: inherit
+    with:
+      project: ${{  needs.init-env.outputs.PROJECT }}
+      
+  delete-project:
+    needs: [init-env,delete-cluster]
+    uses: ./.github/workflows/delete-project.yaml
+    secrets: inherit
+    with:
+      project: ${{  needs.init-env.outputs.PROJECT }}
