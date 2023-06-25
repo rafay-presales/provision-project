@@ -34,5 +34,6 @@ jobs:
         RCTL_PROJECT: ${{ inputs.project }}
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" gke/cluster.yaml
+        yq e -i ".metadata.name = \"$RCTL_PROJECT-gke-1\"" gke/cluster.yaml
         rctl apply -f gke/cluster.yaml
       shell: bash
