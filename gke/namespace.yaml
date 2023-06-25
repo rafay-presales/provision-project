@@ -9,6 +9,6 @@ spec:
   namespaceMeshPolicyParams: {}
   placement:
     labels:
-    - key: rafay.dev/clusterName
-      value: demo-1-gke-1
+    - key: rafay.dev/clusterType
+      value: gke
   resourceQuotas: {}
