@@ -5,7 +5,7 @@ metadata:
 spec:
  type: Gke
  clusterTemplateRef:
-   name: gke-multiarch
+   name: presales-gke-cluster-template
    version: v1
  values:
    spec_blueprint_version: v1
