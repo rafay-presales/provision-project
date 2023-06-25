@@ -2,7 +2,7 @@ name: delete cluster
 on:
   schedule:
     # Runs "every day at 10:30 EDT"
-    - cron: '30 18 * * 2-6'
+    - cron: '30 18 * * 0-6'
   workflow_dispatch:
     inputs:
       logLevel:
