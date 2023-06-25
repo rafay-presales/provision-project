@@ -25,8 +25,6 @@ jobs:
   create-cluster:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
     - name: Setup rctl
       uses: rafay-presales/rctl-setup@main
     - name: delete-cluster
@@ -35,8 +33,5 @@ jobs:
         RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
         RCTL_PROJECT: ${{ inputs.project }}
-      run: |
-        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" gke/cluster.yaml
-        yq e -i ".metadata.name = \"$RCTL_PROJECT-gke-1\"" gke/cluster.yaml
-        rctl delete cluster -f gke/cluster.yaml -y
+      run: rctl delete cluster gke-from-cluster-tempate -y
       shell: bash
