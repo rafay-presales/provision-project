@@ -2,7 +2,6 @@ apiVersion: infra.k8smgmt.io/v3
 kind: Addon
 metadata:
   name: secrets-store-csi-driver-provider-gcp
-  project: defaultproject
 spec:
   artifact:
     artifact:
