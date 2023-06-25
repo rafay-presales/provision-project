@@ -10,6 +10,6 @@ spec:
       repository: secrets-store-csi-driver-provider-gcp
       revision: main
     type: Yaml
-  namespace: kube-system
+  namespace: secrets-store-csi-gcp
   sharing: {}
   version: v1
