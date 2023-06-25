@@ -29,8 +29,7 @@ parameters:
       values: []
   spec_config_feature_cloudMonitoringComponents:
     default:
-    - WORKLOADS
-    - SYSTEM_COMPONENTS
+    - ""
     override:
       allow: true
       values: []
@@ -40,9 +39,9 @@ parameters:
       allow: true
       values: []
   spec_config_feature_enableCloudMonitoring:
-    default: true
+    default: false
     override:
-      allow: true
+      allow: false
       values: []
   spec_config_feature_enableFilestoreCSIDriver:
     default: null
