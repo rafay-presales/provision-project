@@ -33,5 +33,5 @@ jobs:
         RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
         RCTL_PROJECT: ${{ inputs.project }}
-      run: rctl delete cluster gke-from-cluster-tempate -y -p $RCTL_PROJECT
+      run: rctl delete cluster $RCTL_PROJECT-gke-1 -y -p $RCTL_PROJECT
       shell: bash
