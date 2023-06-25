@@ -25,6 +25,8 @@ jobs:
   create-cluster:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout
+      uses: actions/checkout@v3
     - name: Setup rctl
       uses: rafay-presales/rctl-setup@main
     - name: delete-cluster
