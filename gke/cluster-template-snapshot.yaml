@@ -27,21 +27,10 @@ parameters:
     override:
       allow: false
       values: []
-  spec_config_feature_cloudMonitoringComponents:
-    default:
-    - ""
-    override:
-      allow: true
-      values: []
   spec_config_feature_enableCloudLogging:
     default: true
     override:
       allow: true
-      values: []
-  spec_config_feature_enableCloudMonitoring:
-    default: false
-    override:
-      allow: false
       values: []
   spec_config_feature_enableFilestoreCSIDriver:
     default: null
@@ -112,10 +101,8 @@ spec:
     controlPlaneVersion: '{{ spec_config_controlPlaneVersion }}'
     feature:
       cloudLoggingComponents: '{{ spec_config_feature_cloudLoggingComponents }}'
-      cloudMonitoringComponents: '{{ spec_config_feature_cloudMonitoringComponents
-        }}'
       enableCloudLogging: '{{ spec_config_feature_enableCloudLogging }}'
-      enableCloudMonitoring: '{{ spec_config_feature_enableCloudMonitoring }}'
+      enableCloudMonitoring: false
       enableComputeEnginePersistentDiskCSIDriver: true
       enableFilestoreCSIDriver: '{{ spec_config_feature_enableFilestoreCSIDriver }}'
     location:
