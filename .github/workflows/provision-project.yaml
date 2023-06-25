@@ -32,6 +32,13 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       
+  create-repository:
+    needs: [init-env,create-project]
+    uses: ./.github/workflows/create-repository.yaml
+    secrets: inherit
+    with:
+      project: ${{  needs.init-env.outputs.PROJECT }}
+      
   create-credential:
     needs: [init-env,create-project]
     uses: ./.github/workflows/create-credential.yaml
