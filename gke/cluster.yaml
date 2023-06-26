@@ -3,8 +3,8 @@ metadata:
   labels:
     rafay.co/clusterGroup: gke-presales
     k8smgmt.io/fleet: gke-presales
- description: ""
- name: gke-cluster-from-tempate
+  description: ""
+  name: gke-cluster-from-tempate
 spec:
  type: Gke
  clusterTemplateRef:
