@@ -2,6 +2,7 @@ kind: Cluster
 metadata:
   labels:
     rafay.co/clusterGroup: eks-presales
+    k8smgmt.io/fleet: eks-presales
   name: demo-1-eks-1
   project: demo-1
 spec:
