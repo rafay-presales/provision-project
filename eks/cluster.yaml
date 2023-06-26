@@ -1,7 +1,6 @@
 kind: Cluster
 metadata:
   name: demo-1-eks-1
-  description: "EKS presales cluster"
 spec:
   blueprint: minimal
   blueprintversion: Latest
