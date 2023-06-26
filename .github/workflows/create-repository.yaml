@@ -28,24 +28,13 @@ jobs:
     - name: Setup rctl
       uses: rafay-presales/rctl-setup@main
     - name: create-gke-repository
-      if: ${{ github.event.inputs.type == 'gke' }}
       env:
         RCTL_REST_ENDPOINT: 'console.rafay.dev'
         RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
         RCTL_PROJECT: ${{ inputs.project }}
+        CLUSTER_TYPE: ${{ inputs.type }}
       run: |
-        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" gke/gcp-secrets-csi-repository.yaml
-        rctl apply -f gke/gcp-secrets-csi-repository.yaml
-      shell: bash
-    - name: create-eks-repository
-      if: ${{ github.event.inputs.type == 'eks' }}
-      env:
-        RCTL_REST_ENDPOINT: 'console.rafay.dev'
-        RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
-        RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
-        RCTL_PROJECT: ${{ inputs.project }}
-      run: |
-        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" eks/repository.yaml
-        rctl apply -f eks/repository.yaml
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" $CLUSTER_TYPE/repository.yaml
+        rctl apply -f $CLUSTER_TYPE/repository.yaml
       shell: bash
