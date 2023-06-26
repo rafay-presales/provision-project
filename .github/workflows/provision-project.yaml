@@ -6,16 +6,19 @@ on:
     - cron: '30 11 * * 1-5' 
   workflow_dispatch:
     inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
+      type:
+        type: choice
+        description: Type of cluster to provision
+        options: 
+        - eks
+        - gke'
       project:
         description: 'project'
         default: "demo-1"
 
 env:
   PROJECT: ${{ github.event.inputs.project || 'demo-1' }}
+  CLUSTER_TYPE: ${{ github.event.inputs.type || 'gke' }}
 
 jobs:
   init-env:
