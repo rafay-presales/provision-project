@@ -6,7 +6,7 @@ spec:
   artifact:
     artifact:
       chartName: cluster-autoscaler
-      repository: autoscaler-repo
+      repository: autoscaler-helm
     options:
       setString:
       - awsRegion=us-west-2
