@@ -2,9 +2,9 @@ kind: Cluster
 metadata:
   name: demo-1-eks-1
 spec:
-  blueprint: minimal
-  blueprintversion: Latest
+  blueprint: default
   cloudprovider: presales-eks-cluster-provisioning
+  clusterConfig: null
   cniprovider: aws-cni
   proxyconfig: {}
   type: eks
