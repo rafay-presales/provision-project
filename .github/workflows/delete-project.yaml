@@ -34,8 +34,8 @@ jobs:
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
         RCTL_PROJECT: ${{ inputs.project }}
       run: |
-        rctl delete blueprint -p $RCTL_PROJECT gke-blueprint
-        rctl delete addon -p $RCTL_PROJECT secrets-store-csi-driver-provider-gcp
-        rctl delete namespace -p $RCTL_PROJECT secrets-store-csi-gcp
-        rctl delete project $RCTL_PROJECT
+        rctl delete blueprint -p $RCTL_PROJECT gke-blueprint --wait
+        rctl delete addon -p $RCTL_PROJECT secrets-store-csi-driver-provider-gcp --wait
+        rctl delete namespace -p $RCTL_PROJECT secrets-store-csi-gcp --wait
+        rctl delete project $RCTL_PROJECT --wait
       shell: bash
