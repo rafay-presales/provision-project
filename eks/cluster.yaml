@@ -1,5 +1,7 @@
 kind: Cluster
 metadata:
+  labels:
+    rafay.co/clusterGroup: eks-presales
   name: demo-1-eks-1
   project: demo-1
 spec:
@@ -22,8 +24,6 @@ managedNodeGroups:
       externalDNS: true
   instanceTypes:
   - t3.xlarge
-  labels:
-    k8smgmt.io/fleet: eks-presales-cluster
   maxSize: 5
   minSize: 1
   name: ng-3a963805
