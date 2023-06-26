@@ -5,11 +5,20 @@ on:
       project:
         required: true
         type: string
+      type:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       project:
         description: 'project'
         default: "demo-1"
+      type:
+        type: choice
+        description: Type of cluster to provision
+        options: 
+        - eks
+        - gke
 jobs:
   create-repository:
     runs-on: ubuntu-latest
@@ -18,7 +27,8 @@ jobs:
       uses: actions/checkout@v3
     - name: Setup rctl
       uses: rafay-presales/rctl-setup@main
-    - name: create-repository
+    - name: create-gke-repository
+      if: ${{ github.event.inputs.type == 'gke' }}
       env:
         RCTL_REST_ENDPOINT: 'console.rafay.dev'
         RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
@@ -27,4 +37,15 @@ jobs:
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" gke/gcp-secrets-csi-repository.yaml
         rctl apply -f gke/gcp-secrets-csi-repository.yaml
+      shell: bash
+    - name: create-eks-repository
+      if: ${{ github.event.inputs.type == 'eks' }}
+      env:
+        RCTL_REST_ENDPOINT: 'console.rafay.dev'
+        RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
+        RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
+        RCTL_PROJECT: ${{ inputs.project }}
+      run: |
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" eks/repository.yaml
+        rctl apply -f eks/repository.yaml
       shell: bash
