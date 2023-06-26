@@ -46,6 +46,7 @@ jobs:
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
       
   create-namespace:
+    if: ${{ github.event.inputs.type == 'gke' }}
     needs: [init-env,create-project]
     uses: ./.github/workflows/create-namespace.yaml
     secrets: inherit
@@ -54,6 +55,7 @@ jobs:
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
       
   create-addon:
+    if: ${{ github.event.inputs.type == 'gke' }}
     needs: [init-env,create-repository,create-namespace]
     uses: ./.github/workflows/create-addon.yaml
     secrets: inherit
@@ -70,6 +72,7 @@ jobs:
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
       
   create-blueprint:
+    if: ${{ github.event.inputs.type == 'gke' }}
     needs: [init-env,create-addon]
     uses: ./.github/workflows/create-blueprint.yaml
     secrets: inherit
@@ -78,6 +81,7 @@ jobs:
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
       
   create-cluster-template:
+    if: ${{ github.event.inputs.type == 'gke' }}
     needs: [init-env,create-project]
     uses: ./.github/workflows/create-cluster-template.yaml
     secrets: inherit
@@ -86,6 +90,7 @@ jobs:
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
       
   create-cluster-template-snapshot:
+    if: ${{ github.event.inputs.type == 'gke' }}
     needs: [init-env,create-cluster-template,create-blueprint,create-credential]
     uses: ./.github/workflows/create-cluster-template-snapshot.yaml
     secrets: inherit
