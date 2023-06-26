@@ -1,11 +1,11 @@
 kind: Cluster
 metadata:
  description: ""
- name: gke-from-cluster-tempate
+ name: gke-cluster-from-tempate
 spec:
  type: Gke
  clusterTemplateRef:
-   name: presales-gke-cluster-template
+   name: gke-cluster-template
    version: v1
  values:
    spec_blueprint_version: v1
