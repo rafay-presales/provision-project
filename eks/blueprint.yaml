@@ -1,0 +1,32 @@
+apiVersion: infra.k8smgmt.io/v3
+kind: Blueprint
+metadata:
+  name: eks-presales
+  project: defaultproject
+spec:
+  type: custom
+  version: v1
+  base:
+    name: minimal
+    version: 1.25.0
+  costProfile:
+    enabled: true
+    name: default-cost-profile-aws
+    version: version-1673434684
+  defaultAddons:
+    csiSecretStoreConfig:
+      providers:
+        aws: true
+    enableCsiSecretStore: true
+    enableMonitoring: true
+  drift:
+    action: Notify
+    enabled: true
+  placement:
+    autoPublish: true
+    fleetValues:
+    - eks-presales-cluster
+  sharing:
+    enabled: true
+    projects:
+    - name: '*'
