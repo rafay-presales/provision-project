@@ -6,22 +6,26 @@ on:
     - cron: '30 3 * * 0-6' 
   workflow_dispatch:
     inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
+      type:
+        type: choice
+        description: Type of cluster to provision
+        options: 
+        - eks
+        - gke
       project:
         description: 'project'
         default: "demo-1"
 
 env:
   PROJECT: ${{ github.event.inputs.project || 'demo-1' }}
+  CLUSTER_TYPE: ${{ github.event.inputs.type || 'gke' }}
 
 jobs:
   init-env:
     runs-on: ubuntu-latest
     outputs:
       PROJECT: ${{ env.PROJECT }}
+      CLUSTER_TYPE: ${{ env.CLUSTER_TYPE }}
     steps:
       - run: echo "null"
       
@@ -31,6 +35,7 @@ jobs:
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
+      type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
       
   delete-project:
     needs: [init-env,delete-cluster]
@@ -38,3 +43,4 @@ jobs:
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
+      type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
