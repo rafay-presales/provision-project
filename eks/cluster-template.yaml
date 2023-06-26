@@ -1,0 +1,6 @@
+kind: ClusterTemplate
+apiVersion: infra.k8smgmt.io/v3
+metadata:
+  name: eks-cluster-template
+  description: 'EKS presales demo cluster template '
+  clusterType: eks
