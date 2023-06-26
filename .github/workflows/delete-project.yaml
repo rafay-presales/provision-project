@@ -8,6 +8,9 @@ on:
       project:
         required: true
         type: string
+      type:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       logLevel:
@@ -33,8 +36,9 @@ jobs:
         RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
         RCTL_PROJECT: ${{ inputs.project }}
+        CLUSTER_TYPE: ${{ inputs.type }}
       run: |
-        rctl delete blueprint -p $RCTL_PROJECT gke-blueprint --wait
+        rctl delete blueprint -p $RCTL_PROJECT $CLUSTER_TYPE-blueprint --wait
         rctl delete addon -p $RCTL_PROJECT secrets-store-csi-driver-provider-gcp --wait
         rctl delete namespace -p $RCTL_PROJECT secrets-store-csi-gcp --wait
         rctl delete project $RCTL_PROJECT --wait
