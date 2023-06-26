@@ -29,7 +29,7 @@ spec:
   placement:
     autoPublish: true
     fleetValues:
-    - gke-presales-cluster
+    - gke-presales
   sharing:
     enabled: false
   networkPolicy:
