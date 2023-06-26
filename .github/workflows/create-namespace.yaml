@@ -5,15 +5,20 @@ on:
       project:
         required: true
         type: string
+      type:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
       project:
         description: 'project'
         default: "demo-1"
+      type:
+        type: choice
+        description: Type of cluster to provision
+        options: 
+        - eks
+        - gke
 
 env:
   PROJECT: ${{ github.event.inputs.project || 'demo-1' }}
@@ -32,7 +37,8 @@ jobs:
         RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
         RCTL_PROJECT: ${{ inputs.project }}
+        CLUSTER_TYPE: ${{ inputs.type }}
       run: |
-        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" gke/namespace.yaml
-        rctl apply -f gke/namespace.yaml
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" $CLUSTER_TYPE/namespace.yaml
+        rctl apply -f $CLUSTER_TYPE/namespace.yaml
       shell: bash
