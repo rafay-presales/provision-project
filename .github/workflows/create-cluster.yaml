@@ -38,5 +38,5 @@ jobs:
       run: |
         yq "(select(documentIndex == 0) | .metadata.project) = \"$RCTL_PROJECT\"" $CLUSTER_TYPE/cluster.yaml
         yq e -i ".metadata.name = \"$RCTL_PROJECT-$CLUSTER_TYPE-1\"" $CLUSTER_TYPE/cluster.yaml
-        rctl apply -f $CLUSTER_TYPE/cluster.yaml
+        rctl apply -f $CLUSTER_TYPE/cluster.yaml -p $RCTL_PROJECT
       shell: bash
