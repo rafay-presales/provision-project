@@ -36,6 +36,6 @@ jobs:
         CLUSTER_TYPE: ${{ inputs.type }}
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" $CLUSTER_TYPE/addon.yaml
-        yq e -i "(..|select(has(\"autoDiscovery.clusterName\")).[\"autoDiscovery.clusterName\"]) |= \"$RCTL_PROJECT-gke-1\"" $CLUSTER_TYPE/addon.yaml
+        yq e -i "(..|select(has(\"autoDiscovery.clusterName\")).[\"autoDiscovery.clusterName\"]) |= \"$RCTL_PROJECT-$CLUSTER_TYPE-1\"" $CLUSTER_TYPE/addon.yaml
         rctl apply -f $CLUSTER_TYPE/addon.yaml
       shell: bash
