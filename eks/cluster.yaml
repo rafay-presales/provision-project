@@ -7,7 +7,7 @@ metadata:
   project: 
 spec:
   blueprint: default
-  cloudprovider: presales-eks-cluster-provisioning
+  cloudprovider: aws-demo-credentials
   clusterConfig: null
   cniprovider: aws-cni
   proxyconfig: {}
