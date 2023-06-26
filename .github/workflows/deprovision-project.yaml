@@ -3,7 +3,7 @@ name: deprovision project demo
 on:
   schedule:
     # Runs "every day at 23:30 EDT"
-    - cron: '30 19 * * 0-6' 
+    - cron: '30 3 * * 0-6' 
   workflow_dispatch:
     inputs:
       logLevel:
