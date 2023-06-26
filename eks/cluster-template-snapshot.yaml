@@ -1,0 +1,112 @@
+    kind: ClusterTemplateSnapshot
+    metadata:
+      description: ""
+      name: v1
+      templateName: eks-cluster-template
+    parameters:
+      blueprint_version:
+        default: v1
+        override:
+          allow: true
+        restricted: false
+      cloud_credential:
+        default: aws-demo-credentials
+        override:
+          allow: true
+        restricted: false
+      cni_provider:
+        default: aws-cni
+        override:
+          allow: true
+        restricted: false
+      enable_access_for_alb_ingress_controller:
+        default: true
+        override:
+          allow: true
+        restricted: false
+      enable_efs:
+        default: false
+        override:
+          allow: true
+        restricted: false
+      instance_types:
+        default:
+        - t3.xlarge
+        override:
+          allow: false
+        restricted: false
+      node_tags:
+        default: {}
+        override:
+          allow: true
+        restricted: false
+      nodegroup_name:
+        default: default-node-group
+        override:
+          allow: true
+        restricted: false
+      nodes:
+        default: 2
+        override:
+          allow: true
+        restricted: false
+      region:
+        default: us-west-2
+        override:
+          values: []
+      tags:
+        default:
+          email: se-team@rafay.co
+          env: cs-demo
+          group: presales
+        override:
+          allow: true
+        restricted: false
+      version:
+        default: "1.26"
+        override:
+          allow: true
+        restricted: false
+    spec:
+      blueprint: eks-presales
+      blueprintversion: '{{ blueprint_version }}'
+      cloudprovider: '{{ cloud_credential }}'
+      cniprovider: '{{ cni_provider }}'
+      config:
+        managedNodeGroups:
+        - amiFamily: AmazonLinux2
+          desiredCapacity: '{{ nodes }}'
+          iam:
+            withAddonPolicies:
+              albIngress: '{{ enable_access_for_alb_ingress_controller }}'
+              appMesh: false
+              autoScaler: true
+              efs: '{{ enable_efs }}'
+              externalDNS: true
+              imageBuilder: false
+          instanceTypes: '{{ instance_types }}'
+          labels: '{{ node_labels }}'
+          maxSize: 2
+          minSize: 2
+          name: '{{ nodegroup_name }}'
+          privateNetworking: false
+          securityGroups:
+            attachIDs: []
+          tags: '{{ node_tags }}'
+          volumeEncrypted: false
+          volumeType: gp3
+        metadata:
+          region: '{{ region }}'
+          tags: '{{ tags }}'
+          version: '{{ version }}'
+        vpc:
+          cidr: 192.168.0.0/16
+          clusterEndpoints:
+            privateAccess: true
+            publicAccess: false
+          nat:
+            gateway: Single
+          subnets:
+            private: {}
+            public: {}
+      type: eks
