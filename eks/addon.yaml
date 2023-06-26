@@ -1,0 +1,17 @@
+apiVersion: infra.k8smgmt.io/v3
+kind: Addon
+metadata:
+  name: autoscaler-addon
+spec:
+  artifact:
+    artifact:
+      chartName: cluster-autoscaler
+      repository: autoscaler-repo
+    options:
+      setString:
+      - awsRegion=us-west-2
+      - autoDiscovery.clusterName=REPLACE_CLUSTER_NAME
+    type: Helm
+  namespace: autoscaler
+  sharing: {}
+  version: v1
