@@ -7,7 +7,7 @@ spec:
   version: v1
   base:
     name: minimal
-    version: 1.26.0
+    version: 1.25.0
   costProfile:
     enabled: true
     name: default-cost-profile-aws
