@@ -20,9 +20,6 @@ on:
         description: 'project'
         default: "demo-1"
 
-env:
-  PROJECT: ${{ github.event.inputs.project || 'demo-1' }}
-
 jobs:
   create-cluster:
     runs-on: ubuntu-latest
