@@ -25,7 +25,7 @@ spec:
   placement:
     autoPublish: true
     fleetValues:
-    - eks-presales-cluster
+    - eks-presales
   sharing:
     enabled: true
     projects:
