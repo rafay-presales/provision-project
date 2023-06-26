@@ -1,0 +1,50 @@
+name: provision eks project demo
+
+on:
+  workflow_dispatch:
+    inputs:
+      type:
+        type: choice
+        description: Type of cluster to provision
+        options: 
+        - eks
+        - gke'
+      project:
+        description: 'project'
+        default: "demo-1"
+
+env:
+  PROJECT: ${{ github.event.inputs.project || 'demo-1' }}
+  CLUSTER_TYPE: ${{ github.event.inputs.type || 'gke' }}
+
+jobs:
+  init-env:
+    runs-on: ubuntu-latest
+    outputs:
+      PROJECT: ${{ env.PROJECT }}
+      CLUSTER_TYPE: ${{ env.CLUSTER_TYPE }}
+    steps:
+      - run: echo "null"
+      
+  create-project:
+    needs: [init-env]
+    uses: ./.github/workflows/create-project.yaml
+    secrets: inherit
+    with:
+      project: ${{  needs.init-env.outputs.PROJECT }}
+      
+  create-credential:
+    needs: [init-env,create-project]
+    uses: ./.github/workflows/create-credential.yaml
+    secrets: inherit
+    with:
+      project: ${{  needs.init-env.outputs.PROJECT }}
+      type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      
+  create-cluster:
+    needs: [init-env,create-credential]
+    uses: ./.github/workflows/create-cluster.yaml
+    secrets: inherit
+    with:
+      project: ${{  needs.init-env.outputs.PROJECT }}
+      type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
