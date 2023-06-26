@@ -32,7 +32,7 @@ managedNodeGroups:
   volumeSize: 80
   volumeType: gp3
 metadata:
-  name: demo-1-eks-1
+  name: 
   region: us-west-2
   tags:
     email: kurt.madel@rafay.co
