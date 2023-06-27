@@ -40,7 +40,7 @@ jobs:
       uses: rafay-presales/rctl-setup@main
     - name: delete-blueprint
       shell: bash
-      run: rctl delete blueprint -p $RCTL_PROJECT $CLUSTER_TYPE-blueprint --v3 --wait
+      run: rctl delete blueprint -p $RCTL_PROJECT $CLUSTER_TYPE-presales --v3 --wait
     - name: delete-gke-addon
       shell: bash
       if: ${{ github.event.inputs.type == 'gke' }}
