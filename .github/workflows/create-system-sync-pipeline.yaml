@@ -20,14 +20,14 @@ on:
         - eks
         - gke
 jobs:
-  create-system-sync-repo:
+  create-system-sync-pipeline:
     runs-on: ubuntu-latest
     steps:
     - name: checkout
       uses: actions/checkout@v3
     - name: Setup rctl
       uses: rafay-presales/rctl-setup@main
-    - name: create-system-sync-repo
+    - name: create-system-sync-pipeline
       shell: bash
       env:
         RCTL_REST_ENDPOINT: 'console.rafay.dev'
