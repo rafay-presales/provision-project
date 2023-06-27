@@ -1,7 +1,7 @@
 apiVersion: infra.k8smgmt.io/v3
 kind: Blueprint
 metadata:
-  name: gke-blueprint
+  name: gke-presales
 spec:
   base:
     name: default-gke
