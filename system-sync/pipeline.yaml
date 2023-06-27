@@ -13,6 +13,10 @@ spec:
       - name: Blueprint
       - name: Addon
       - name: Repository
+      - name: Pipeline
+      - name: SecretSealer
+      - name: Namespace
+      - name: Agent
       sourceAsDestination: true
       sourceRepo:
         repository: REPLACE
