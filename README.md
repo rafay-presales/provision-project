@@ -2,7 +2,7 @@
 Provision a project with a cluster from cluster template and custom blueprint.
 
 Includes:
-- Creates a new Rafay project
+- Creating a new Rafay project
 - Creating credentials with Action Secrets
 - Creating a custom Addon
   - GKE: K8s yaml manifest based on the https://github.com/GoogleCloudPlatform/secrets-store-csi-driver-provider-gcp GitHub repoistory
