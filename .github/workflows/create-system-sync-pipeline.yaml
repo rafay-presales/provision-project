@@ -38,6 +38,6 @@ jobs:
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" system-sync/pipeline.yaml
         yq e -i ".metadata.name = \"$CLUSTER_TYPE-system-sync\"" system-sync/pipeline.yaml
-        yq e -i ".spec.stages[0].sourceRepo.repository = \"$CLUSTER_TYPE-system-sync\"" system-sync/pipeline.yaml
-        yq e -i ".spec.triggers[0].repo.repository = \"$CLUSTER_TYPE-system-sync\"" system-sync/pipeline.yaml
+        yq e -i ".spec.stages[0].config.sourceRepo.repository = \"$CLUSTER_TYPE-system-sync\"" system-sync/pipeline.yaml
+        yq e -i ".spec.triggers[0].config.repo.repository = \"$CLUSTER_TYPE-system-sync\"" system-sync/pipeline.yaml
         rctl apply -f system-sync/pipeline.yaml
