@@ -36,7 +36,7 @@ jobs:
         RCTL_PROJECT: ${{ inputs.project }}
         CLUSTER_TYPE: ${{ inputs.type }}
       run: |
-        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" shared/agent.yaml
-        yq e -i ".metadata.name = \"$CLUSTER_TYPE-presales\"" shared/agent.yaml
-        yq e -i ".spec.cluster.name = \"$RCTL_PROJECT-$CLUSTER_TYPE-1\"" shared/agent.yaml
-        rctl apply -f shared/agent.yaml
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" system-sync/agent.yaml
+        yq e -i ".metadata.name = \"$CLUSTER_TYPE-presales\"" system-sync/agent.yaml
+        yq e -i ".spec.cluster.name = \"$RCTL_PROJECT-$CLUSTER_TYPE-1\"" system-sync/agent.yaml
+        rctl apply -f system-sync/agent.yaml
