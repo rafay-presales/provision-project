@@ -15,6 +15,10 @@ on:
       project:
         description: 'project'
         default: "demo-1"
+      system-sync:
+        type: boolean
+        description: 'Include System Sync'
+        default: false
 
 env:
   PROJECT: ${{ github.event.inputs.project || 'demo-1' }}
@@ -95,6 +99,15 @@ jobs:
   create-cluster:
     needs: [init-env,create-cluster-template-snapshot]
     uses: ./.github/workflows/create-cluster.yaml
+    secrets: inherit
+    with:
+      project: ${{  needs.init-env.outputs.PROJECT }}
+      type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      
+  system-sync-setup:
+    if: ${{ github.event.inputs.system-sync }}
+    needs: [init-env,create-cluster]
+    uses: ./.github/workflows/system-sync-setup.yaml
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
