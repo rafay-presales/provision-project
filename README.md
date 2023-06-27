@@ -15,6 +15,7 @@ Includes:
 All actions may be runs as one worklfow or run individually. 
 
 #### TODO
+- Setup defaultproject with shared resources
 - Add Workload(s)
 - Add Backup/Restore
 - Fleet Management
