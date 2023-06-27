@@ -40,5 +40,6 @@ jobs:
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" system-sync/system-sync-repo.yaml
         yq e -i ".metadata.name = \"$CLUSTER_TYPE-presales\"" system-sync/system-sync-repo.yaml
         yq e -i ".spec.credentials.password = \"$SYSTEM_SYNC_TOKEN\"" system-sync/system-sync-repo.yaml
+        yq e -i ".spec.agents[0].name = \"$CLUSTER_TYPE-presales\"" system-sync/system-sync-repo.yaml
         yq e -i ".spec.endpoint = \"https://github.com/rafay-presales/$CLUSTER_TYPE-system-sync.git\"" system-sync/system-sync-repo.yaml
         rctl apply -f system-sync/system-sync-repo.yaml
