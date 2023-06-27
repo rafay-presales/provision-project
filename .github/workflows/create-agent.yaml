@@ -1,0 +1,42 @@
+name: create agent
+on:
+  workflow_call:
+    inputs:
+      project:
+        required: true
+        type: string
+      type:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'project'
+        default: "demo-1"
+      type:
+        type: choice
+        description: Type of cluster to provision
+        options: 
+        - eks
+        - gke
+jobs:
+  create-agent:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+    - name: Setup rctl
+      uses: rafay-presales/rctl-setup@main
+    - name: create-agent
+      shell: bash
+      env:
+        RCTL_REST_ENDPOINT: 'console.rafay.dev'
+        RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
+        RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
+        RCTL_PROJECT: ${{ inputs.project }}
+        CLUSTER_TYPE: ${{ inputs.type }}
+      run: |
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" shared/agent.yaml
+        yq e -i ".metadata.name = \"$CLUSTER_TYPE-presales\"" shared/agent.yaml
+        yq e -i ".spec.cluster.name = \"$RCTL_PROJECT-$CLUSTER_TYPE-1\"" shared/agent.yaml
+        rctl apply -f shared/agent.yaml
