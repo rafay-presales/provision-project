@@ -12,6 +12,7 @@ spec:
       - name: Cluster
       - name: Blueprint
       - name: Addon
+      - name: Repository
       sourceAsDestination: true
       sourceRepo:
         repository: REPLACE
