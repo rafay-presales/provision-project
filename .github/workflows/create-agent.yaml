@@ -37,6 +37,6 @@ jobs:
         CLUSTER_TYPE: ${{ inputs.type }}
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" system-sync/agent.yaml
-        yq e -i ".metadata.name = \"$CLUSTER_TYPE-presales\"" system-sync/agent.yaml
+        yq e -i ".metadata.name = \"$CLUSTER_TYPE-system-sync\"" system-sync/agent.yaml
         yq e -i ".spec.cluster.name = \"$RCTL_PROJECT-$CLUSTER_TYPE-1\"" system-sync/agent.yaml
         rctl apply -f system-sync/agent.yaml
