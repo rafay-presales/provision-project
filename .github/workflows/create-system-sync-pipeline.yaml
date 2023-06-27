@@ -38,6 +38,6 @@ jobs:
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" system-sync/pipeline.yaml
         yq e -i ".metadata.name = \"$CLUSTER_TYPE-system-sync\"" system-sync/pipeline.yaml
-        yq e -i ".spec.stages[] |= if .name==\"system-sync-stage\" then .set[0].sourceRepo.repository |= \"$CLUSTER_TYPE-system-sync\" else . end" system-sync/pipeline.yaml
-        yq e -i ".spec.triggers[] |= if .name==\"system-sync-webhook\" then .set[0].repo.repository |= \"$CLUSTER_TYPE-system-sync\" else . end" system-sync/pipeline.yaml
+        yq e -i ".spec.stages[0].sourceRepo.repository = \"$CLUSTER_TYPE-system-sync\"" system-sync/pipeline.yaml
+        yq e -i ".spec.triggers[0].repo.repository = \"$CLUSTER_TYPE-system-sync\"" system-sync/pipeline.yaml
         rctl apply -f system-sync/pipeline.yaml
