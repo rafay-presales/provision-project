@@ -7,9 +7,9 @@ metadata:
   name: REPLACE
 spec:
   agents:
-  - name: system-sync
+  - name: REPLACE
   credentials:
     username: kmadel
-  endpoint: https://github.com/rafay-presales/gitops-system-sync.git
+  endpoint: REPLACE
   sharing: {}
   type: Git
