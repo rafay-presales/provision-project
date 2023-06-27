@@ -13,10 +13,12 @@ on:
         type: string
   workflow_dispatch:
     inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
+      type:
+        type: choice
+        description: Type of cluster to provision
+        options: 
+        - gke
+        - eks
       project:
         description: 'project'
         default: "demo-1"
