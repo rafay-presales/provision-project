@@ -41,3 +41,11 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      
+  create-pipeline:
+    needs: [init-env,create-repo]
+    uses: ./.github/workflows/create-system-sync-pipeline.yaml
+    secrets: inherit
+    with:
+      project: ${{  needs.init-env.outputs.PROJECT }}
+      type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
