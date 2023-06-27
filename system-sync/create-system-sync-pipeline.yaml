@@ -1,0 +1,43 @@
+name: create system sync pipeline
+on:
+  workflow_call:
+    inputs:
+      project:
+        required: true
+        type: string
+      type:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'project'
+        default: "demo-1"
+      type:
+        type: choice
+        description: Type of cluster to provision
+        options: 
+        - eks
+        - gke
+jobs:
+  create-system-sync-repo:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+    - name: Setup rctl
+      uses: rafay-presales/rctl-setup@main
+    - name: create-system-sync-repo
+      shell: bash
+      env:
+        RCTL_REST_ENDPOINT: 'console.rafay.dev'
+        RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
+        RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
+        RCTL_PROJECT: ${{ inputs.project }}
+        CLUSTER_TYPE: ${{ inputs.type }}
+      run: |
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" system-sync/pipeline.yaml
+        yq e -i ".metadata.name = \"$CLUSTER_TYPE-system-sync\"" system-sync/pipeline.yaml
+        yq e -i ".spec.stages[] |= if .name=="system-sync-stage" then .set[0].sourceRepo.repository |= \"$CLUSTER_TYPE-system-sync\" else . end" system-sync/pipeline.yaml
+        yq e -i ".spec.triggers[] |= if .name=="system-sync-webhook" then .set[0].repo.repository |= \"$CLUSTER_TYPE-system-sync\" else . end" system-sync/pipeline.yaml
+        rctl apply -f system-sync/pipeline.yaml
