@@ -1,0 +1,15 @@
+apiVersion: integrations.k8smgmt.io/v3
+kind: Repository
+metadata:
+  annotations:
+    rafay.dev/description: Repo for two-way system sync.
+  description: Repo for two-way system sync.
+  name: REPLACE
+spec:
+  agents:
+  - name: system-sync
+  credentials:
+    username: kmadel
+  endpoint: https://github.com/rafay-presales/gitops-system-sync.git
+  sharing: {}
+  type: Git
