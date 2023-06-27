@@ -1,0 +1,44 @@
+name: create system sync repo
+on:
+  workflow_call:
+    inputs:
+      project:
+        required: true
+        type: string
+      type:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'project'
+        default: "demo-1"
+      type:
+        type: choice
+        description: Type of cluster to provision
+        options: 
+        - eks
+        - gke
+jobs:
+  create-system-sync-repo:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+    - name: Setup rctl
+      uses: rafay-presales/rctl-setup@main
+    - name: create-system-sync-repo
+      shell: bash
+      env:
+        RCTL_REST_ENDPOINT: 'console.rafay.dev'
+        RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
+        RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
+        RCTL_PROJECT: ${{ inputs.project }}
+        CLUSTER_TYPE: ${{ inputs.type }}
+        SYSTEM_SYNC_TOKEN: ${{ secrets.SYSTEM_SYNC_TOKEN }}
+      run: |
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" system-sync/system-sync-repo.yaml
+        yq e -i ".metadata.name = \"$CLUSTER_TYPE-presales\"" system-sync/system-sync-repo.yaml
+        yq e -i ".spec.credentials.password = \"$SYSTEM_SYNC_TOKEN\"" system-sync/system-sync-repo.yaml
+        yq e -i ".spec.endpoint = \"https://github.com/rafay-presales/$CLUSTER_TYPE-system-sync.git\"" system-sync/system-sync-repo.yaml
+        rctl apply -f system-sync/system-sync-repo.yaml
