@@ -1,6 +1,14 @@
 name: system-sync-setup
 
 on:
+  workflow_call:
+    inputs:
+      project:
+        required: true
+        type: string
+      type:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       type:
