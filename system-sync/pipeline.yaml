@@ -1,0 +1,28 @@
+apiVersion: gitops.k8smgmt.io/v3
+kind: Pipeline
+metadata:
+  name: REPLACE
+spec:
+  active: true
+  stages:
+  - config:
+      destinationRepo: {}
+      gitToSystemSync: true
+      includedResources:
+      - name: Cluster
+      - name: Blueprint
+      sourceAsDestination: true
+      sourceRepo:
+        repository: REPLACE
+        revision: main
+      systemToGitSync: true
+    name: system-sync-stage
+    type: SystemSync
+  triggers:
+  - config:
+      repo:
+        provider: Github
+        repository: REPLACE
+        revision: main
+    name: REPLACE
+    type: Webhook
