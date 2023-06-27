@@ -41,6 +41,6 @@ jobs:
         yq e -i ".spec.stages[0].config.sourceRepo.repository = \"$CLUSTER_TYPE-system-sync\"" system-sync/pipeline.yaml
         yq e -i ".spec.triggers[0].config.repo.repository = \"$CLUSTER_TYPE-system-sync\"" system-sync/pipeline.yaml
         rctl apply -f system-sync/pipeline.yaml --wait
-        rctl start pipeline $CLUSTER_TYPE-system-sync -p $RCTL_PROJECT
         rctl get trigger -p $RCTL_PROJECT system-sync-webhook -o yaml --v3 > trigger.yaml
         yq '.triggerstatus.extra.webhook.webhookurl' trigger.yaml
+        rctl start pipeline $CLUSTER_TYPE-system-sync -p $RCTL_PROJECT
