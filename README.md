@@ -17,5 +17,6 @@ All actions may be runs as one worklfow or run individually.
 #### TODO
 - Setup defaultproject with shared resources
 - Add Workload(s)
+- Use AWS CLI to create EKS cluster for import
 - Add Backup/Restore
 - Fleet Management
