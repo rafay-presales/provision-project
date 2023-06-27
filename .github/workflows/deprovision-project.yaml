@@ -18,7 +18,7 @@ on:
 
 env:
   PROJECT: ${{ github.event.inputs.project || 'demo-1' }}
-  CLUSTER_TYPE: ${{ github.event.inputs.type || 'gke' }}
+  CLUSTER_TYPE: ${{ github.event.inputs.type || 'eks' }}
 
 jobs:
   init-env:
