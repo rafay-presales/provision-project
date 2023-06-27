@@ -3,7 +3,7 @@ apiVersion: infra.k8smgmt.io/v3
 metadata:
   description: ""
   name: v1
-  templateName: presales-gke-cluster-template
+  templateName: gke-cluster-template
 parameters:
   spec_blueprint_name:
     default: gke-blueprint
