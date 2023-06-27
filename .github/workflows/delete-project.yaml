@@ -40,7 +40,7 @@ jobs:
         RCTL_PROJECT: ${{ inputs.project }}
         CLUSTER_TYPE: ${{ inputs.type }}
       run: |
-        rctl delete blueprint -p $RCTL_PROJECT $CLUSTER_TYPE-blueprint --wait
+        rctl delete blueprint -p $RCTL_PROJECT $CLUSTER_TYPE-blueprint --v3 --wait
         rctl delete addon -p $RCTL_PROJECT secrets-store-csi-driver-provider-gcp --wait
         rctl delete namespace -p $RCTL_PROJECT secrets-store-csi-gcp --wait
         rctl delete project $RCTL_PROJECT --wait
