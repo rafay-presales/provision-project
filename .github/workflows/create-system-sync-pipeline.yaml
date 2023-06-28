@@ -83,5 +83,5 @@ jobs:
         rctl get trigger -p $RCTL_PROJECT system-sync-webhook -o yaml --v3 > trigger.yaml
         WEBHOOK_URL=$(yq '.triggerstatus.extra.webhook.webhookurl' trigger.yaml)
         WEBHOOK_SECRET=$(yq '.triggerstatus.extra.webhook.webhooksecret' trigger.yaml)
-        echo '{"name":"web","active":true,"events":["push","pull_request","release"],"config":{"url":"$WEBHOOK_URL","secret":"$WEBHOOK_SECRET","content_type":"form","insecure_ssl":"0"}}' | gh api repos/rafay-presales/$CLUSTER_TYPE-system-sync/hooks --input - -X POST
+        echo '{"name":"web","active":true,"events":["push","pull_request","release"],"config":{"url":"https://$WEBHOOK_URL","secret":"$WEBHOOK_SECRET","content_type":"form","insecure_ssl":"0"}}' | gh api repos/rafay-presales/$CLUSTER_TYPE-system-sync/hooks --input - -X POST
         rctl start pipeline $CLUSTER_TYPE-system-sync -p $RCTL_PROJECT
