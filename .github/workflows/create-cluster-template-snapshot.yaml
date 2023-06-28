@@ -36,6 +36,6 @@ jobs:
         RCTL_PROJECT: ${{ inputs.project }}
         CLUSTER_TYPE: ${{ inputs.type }}
       run: |
-        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" $CLUSTER_TYPE/credential.yaml
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" $CLUSTER_TYPE/cluster-template-snapshot.yaml
         rctl apply -f $CLUSTER_TYPE/cluster-template-snapshot.yaml
       shell: bash
