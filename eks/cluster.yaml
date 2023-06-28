@@ -8,6 +8,7 @@ metadata:
   name: REPLACE
   project: REPLACE
 spec:
+  type: eks
   clusterTemplateRef:
     name: eks-cluster-template
     version: v1
