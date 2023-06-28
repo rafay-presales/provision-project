@@ -35,5 +35,7 @@ jobs:
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
         RCTL_PROJECT: ${{ inputs.project }}
         CLUSTER_TYPE: ${{ inputs.type }}
-      run: rctl apply -f $CLUSTER_TYPE/cluster-template-snapshot.yaml
+      run: |
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" $CLUSTER_TYPE/credential.yaml
+        rctl apply -f $CLUSTER_TYPE/cluster-template-snapshot.yaml
       shell: bash
