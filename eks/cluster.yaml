@@ -1,47 +1,14 @@
 kind: Cluster
 metadata:
-  labels:
-    rafay.co/clusterGroup: eks-presales
-    k8smgmt.io/fleet: eks-presales
-  name: 
+  clusterTemplateRef:
+    name: eks-cluster-template
+    project: acme-corp
+    version: v1
+  name: eks-from-template
+  project: acme-corp
 spec:
-  blueprint: default
+  blueprint: eks-presales
+  blueprintversion: v1
   cloudprovider: aws-demo-credentials
-  clusterConfig: null
   cniprovider: aws-cni
-  proxyconfig: {}
   type: eks
----
-apiVersion: rafay.io/v1alpha5
-kind: ClusterConfig
-managedNodeGroups:
-- amiFamily: AmazonLinux2
-  desiredCapacity: 1
-  iam:
-    withAddonPolicies:
-      albIngress: true
-      autoScaler: true
-      externalDNS: true
-  instanceTypes:
-  - t3.xlarge
-  maxSize: 5
-  minSize: 1
-  name: ng-3a963805
-  version: "1.26"
-  volumeSize: 80
-  volumeType: gp3
-metadata:
-  name: 
-  region: us-west-2
-  tags:
-    email: kurt.madel@rafay.co
-    env: cs-demo
-    group: presales
-  version: "1.26"
-vpc:
-  cidr: 192.168.0.0/16
-  clusterEndpoints:
-    privateAccess: true
-    publicAccess: false
-  nat:
-    gateway: Single
