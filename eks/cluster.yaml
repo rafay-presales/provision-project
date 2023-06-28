@@ -4,7 +4,7 @@ metadata:
   name: REPLACE
   project: REPLACE
 spec:
-  type: aws-eks
+  cluster_type: aws-eks
   clusterTemplateRef:
     name: eks-cluster-template
     version: v1
