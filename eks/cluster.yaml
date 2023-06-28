@@ -1,13 +1,60 @@
 kind: Cluster
 metadata:
-  description: ""
-  name: REPLACE
-  project: REPLACE
-spec:
-  cluster_type: aws-eks
-  type: eks
   clusterTemplateRef:
     name: eks-cluster-template
+    project: red-team
     version: v1
-  values:
-    blueprint_version: v1
+  name: eks-2
+  project: red-team
+spec:
+  blueprint: eks-presales
+  blueprintversion: v1
+  cloudprovider: aws-demo-credentials
+  cniprovider: aws-cni
+  type: eks
+---
+apiVersion: rafay.io/v1alpha5
+kind: ClusterConfig
+addons:
+- name: aws-ebs-csi-driver
+  version: latest
+managedNodeGroups:
+- amiFamily: AmazonLinux2
+  desiredCapacity: 1
+  iam:
+    withAddonPolicies:
+      albIngress: true
+      appMesh: false
+      autoScaler: true
+      efs: false
+      externalDNS: true
+      imageBuilder: false
+  instanceTypes:
+  - t3.xlarge
+  maxSize: 5
+  minSize: 1
+  name: default-node-group
+  privateNetworking: false
+  securityGroups:
+    attachIDs: []
+  tags: {}
+  volumeEncrypted: false
+  volumeType: gp3
+metadata:
+  name: eks-2
+  region: us-west-2
+  tags:
+    email: se-team@rafay.co
+    env: cs-demo
+    group: presales
+  version: "1.26"
+vpc:
+  cidr: 192.168.0.0/16
+  clusterEndpoints:
+    privateAccess: true
+    publicAccess: false
+  nat:
+    gateway: Single
+  subnets:
+    private: {}
+    public: {}
