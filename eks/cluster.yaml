@@ -1,14 +1,14 @@
 kind: Cluster
 metadata:
-  clusterTemplateRef:
-    name: eks-cluster-template
-    project: acme-corp
-    version: v1
-  name: eks-from-template
-  project: acme-corp
+  labels:
+    rafay.co/clusterGroup: eks-presales
+    k8smgmt.io/fleet: eks-presales
+  description: ""
+  name: REPLACE
 spec:
-  blueprint: eks-presales
-  blueprintversion: v1
-  cloudprovider: aws-demo-credentials
-  cniprovider: aws-cni
-  type: eks
+ type: eks
+ clusterTemplateRef:
+   name: eks-cluster-template
+   version: v1
+ values:
+   blueprint_version: v1
