@@ -65,4 +65,4 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
-      recreate-sync-repo: ${{  needs.init-env.outputs.RECREATE_SYNC_REPO }}
+      recreate-sync-repo: ${{  fromJSON(needs.init-env.outputs.RECREATE_SYNC_REPO) }}
