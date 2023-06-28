@@ -34,7 +34,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
-          gh delete rafay-presales/$CLUSTER_TYPE-system-sync --yes
+          gh repo delete rafay-presales/$CLUSTER_TYPE-system-sync --yes
 
           gh api \
             --method POST \
