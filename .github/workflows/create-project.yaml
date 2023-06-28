@@ -7,10 +7,9 @@ on:
         type: string
   workflow_dispatch:
     inputs:
-      logLevel:
-        description: 'Log level'     
+      project:
         required: true
-        default: 'warning'
+        type: string
 jobs:
   create-project:
     runs-on: ubuntu-latest

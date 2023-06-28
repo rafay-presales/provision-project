@@ -46,7 +46,7 @@
           allow: true
         restricted: false
       nodes:
-        default: 2
+        default: 1
         override:
           allow: true
         restricted: false
@@ -85,9 +85,8 @@
               externalDNS: true
               imageBuilder: false
           instanceTypes: '{{ instance_types }}'
-          labels: '{{ node_labels }}'
-          maxSize: 2
-          minSize: 2
+          maxSize: 5
+          minSize: 1
           name: '{{ nodegroup_name }}'
           privateNetworking: false
           securityGroups:
