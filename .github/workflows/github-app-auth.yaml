@@ -33,15 +33,16 @@ jobs:
         shell: bash
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-        run: gh api \
-          --method POST \
-          -H "Accept: application/vnd.github+json" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          /orgs/rafay-presales/repos \
-          -f name="$CLUSTER_TYPE-system-sync" \
-          -f description='Repository for Rafay System Sync' \
-          -f homepage='https://rafay.co' \
-          -F private=false \
-          -F has_issues=false \
-          -F has_projects=false \
-          -F has_wiki=false 
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /orgs/rafay-presales/repos \
+            -f name="$CLUSTER_TYPE-system-sync" \
+            -f description='Repository for Rafay System Sync' \
+            -f homepage='https://rafay.co' \
+            -F private=false \
+            -F has_issues=false \
+            -F has_projects=false \
+            -F has_wiki=false 
