@@ -6,6 +6,7 @@ metadata:
   description: ""
   name: REPLACE
 spec:
+ type: eks
  clusterTemplateRef:
    name: eks-cluster-template
    version: v1
