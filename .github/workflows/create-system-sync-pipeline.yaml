@@ -10,8 +10,6 @@ on:
         type: string
       recreate-sync-repo:
         type: boolean
-        description: 'Recreate System Sync Repository - will delete all contents'
-        default: true
   workflow_dispatch:
     inputs:
       project:
