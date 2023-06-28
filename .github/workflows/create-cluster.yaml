@@ -1,4 +1,4 @@
-name: create cluster from template
+name: create cluster
 on:
   workflow_call:
     inputs:
@@ -28,7 +28,7 @@ jobs:
       uses: actions/checkout@v3
     - name: Setup rctl
       uses: rafay-presales/rctl-setup@main
-    - name: create-cluster-from-template
+    - name: create-cluster
       env:
         RCTL_REST_ENDPOINT: 'console.rafay.dev'
         RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}

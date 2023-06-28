@@ -1,15 +1,13 @@
 kind: Cluster
 metadata:
-  clusterTemplateRef:
-    name: eks-cluster-template
-    project: red-team
-    version: v1
-  name: eks-2
-  project: red-team
+  labels:
+    rafay.co/clusterGroup: eks-presales
+    k8smgmt.io/fleet: eks-presales
 spec:
   blueprint: eks-presales
   blueprintversion: v1
   cloudprovider: aws-demo-credentials
+  clusterConfig: null
   cniprovider: aws-cni
   type: eks
 ---
