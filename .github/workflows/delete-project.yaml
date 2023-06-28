@@ -17,8 +17,8 @@ on:
         type: choice
         description: Type of cluster to provision
         options: 
-        - gke
         - eks
+        - gke
       project:
         description: 'project'
         default: "demo-1"
