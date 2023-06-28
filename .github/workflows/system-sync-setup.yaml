@@ -20,10 +20,15 @@ on:
       project:
         description: 'project'
         default: "demo-1"
+      recreate-sync-repo:
+        type: boolean
+        description: 'Recreate System Sync Repository - will delete all contents'
+        default: true
 
 env:
   PROJECT: ${{ github.event.inputs.project || 'demo-1' }}
   CLUSTER_TYPE: ${{ github.event.inputs.type || 'eks' }}
+  RECREATE_SYNC_REPO: ${{ github.event.inputs.recreate-sync-repo || true }}
 
 jobs:
   init-env:
@@ -31,6 +36,7 @@ jobs:
     outputs:
       PROJECT: ${{ env.PROJECT }}
       CLUSTER_TYPE: ${{ env.CLUSTER_TYPE }}
+      RECREATE_SYNC_REPO: ${{ env.RECREATE_SYNC_REPO }}
     steps:
       - run: echo "null"
       
@@ -57,3 +63,4 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      recreate-sync-repo: ${{  needs.init-env.outputs.RECREATE_SYNC_REPO }}

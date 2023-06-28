@@ -8,6 +8,10 @@ on:
       type:
         required: true
         type: string
+      recreate-sync-repo:
+        type: boolean
+        description: 'Recreate System Sync Repository - will delete all contents'
+        default: true
   workflow_dispatch:
     inputs:
       project:
@@ -19,6 +23,10 @@ on:
         options: 
         - eks
         - gke
+      recreate-sync-repo:
+        type: boolean
+        description: 'Recreate System Sync Repository - will delete all contents'
+        default: true
 jobs:
   create-system-sync-pipeline:
     runs-on: ubuntu-latest
@@ -45,16 +53,13 @@ jobs:
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" system-sync/secretsealer.yaml
         rctl apply -f system-sync/secretsealer.yaml --wait
     - name: create-sync-repo
+      if: ${{ github.event.inputs.recreate-sync-repo }}
       shell: bash
       env:
         GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
       run: |
-        gh api \
-          --method DELETE \
-          -H "Accept: application/vnd.github+json" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          /repos/rafay-presales/$CLUSTER_TYPE-system-sync \
-          --yes
+        gh repo delete rafay-presales/$CLUSTER_TYPE-system-sync --yes
+
         gh api \
           --method POST \
           -H "Accept: application/vnd.github+json" \
@@ -69,6 +74,8 @@ jobs:
           -F has_wiki=false 
     - name: create-system-sync-pipeline
       shell: bash
+      env:
+        GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" system-sync/pipeline.yaml
         yq e -i ".metadata.name = \"$CLUSTER_TYPE-system-sync\"" system-sync/pipeline.yaml
@@ -78,4 +85,5 @@ jobs:
         rctl get trigger -p $RCTL_PROJECT system-sync-webhook -o yaml --v3 > trigger.yaml
         WEBHOOK_URL=$(yq '.triggerstatus.extra.webhook.webhookurl' trigger.yaml)
         WEBHOOK_SECRET=$(yq '.triggerstatus.extra.webhook.webhooksecret' trigger.yaml)
+        echo '{"name":"web","active":true,"events":["push","pull_request","release"],"config":{"url":"$WEBHOOK_URL","secret":"$WEBHOOK_SECRET","content_type":"form","insecure_ssl":"0"}}' | gh api repos/rafay-presales/$CLUSTER_TYPE-system-sync/hooks --input - -X POST
         rctl start pipeline $CLUSTER_TYPE-system-sync -p $RCTL_PROJECT
