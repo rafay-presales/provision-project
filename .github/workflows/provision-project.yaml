@@ -2,8 +2,8 @@ name: provision project demo
 
 on:
   schedule:
-    # Runs "Mon-Fri at 06:30 EDT"
-    - cron: '30 11 * * 1-5' 
+    # Runs "Mon-Fri at 07:10 EDT"
+    - cron: '10 11 * * 1-5' 
   workflow_dispatch:
     inputs:
       type:
