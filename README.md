@@ -19,4 +19,6 @@ All actions may be runs as one worklfow or run individually.
 - Add Workload(s)
 - Use AWS CLI to create EKS cluster for import
 - Add Backup/Restore
-- Fleet Management
+- Fleet Management 
+  - 2 clusters
+  - updated blueprint via GitOps

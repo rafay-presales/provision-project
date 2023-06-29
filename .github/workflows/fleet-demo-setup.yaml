@@ -1,0 +1,40 @@
+name: fleet demo setup
+
+on: 
+  workflow_dispatch:
+    inputs:
+      type:
+        type: choice
+        description: Type of cluster to provision
+        options: 
+        - eks
+        - gke
+      project:
+        description: 'project'
+        default: "demo-1"
+      cluster-name:
+        description: 'cluster name for second fleet cluster'
+        default: "fleet-cluster-2"
+
+env:
+  PROJECT: ${{ github.event.inputs.project || 'demo-1' }}
+  CLUSTER_TYPE: ${{ github.event.inputs.type || 'eks' }}
+  CLUSTER_NAME: ${{ github.event.inputs.cluster-name || 'fleet-cluster-2' }}
+
+jobs:
+  init-env:
+    runs-on: ubuntu-latest
+    outputs:
+      PROJECT: ${{ env.PROJECT }}
+      CLUSTER_TYPE: ${{ env.CLUSTER_TYPE }}
+      CLUSTER_NAME: ${{ env.CLUSTER_NAME }}
+    steps:
+      - run: echo "null"
+  create-cluster:
+    needs: [init-env]
+    uses: rafay-presales/provision-project-demo/.github/workflows/create-cluster.yaml@main
+    secrets: inherit
+    with:
+      project: ${{  needs.init-env.outputs.PROJECT }}
+      type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      cluster-name: ${{  needs.init-env.outputs.CLUSTER_NAME }}

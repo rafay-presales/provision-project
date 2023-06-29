@@ -44,7 +44,7 @@ jobs:
       
   create-agent:
     needs: [init-env]
-    uses: ./.github/workflows/create-agent.yaml
+    uses: rafay-presales/provision-project-demo/.github/workflows/create-agent.yaml@main
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
@@ -52,7 +52,7 @@ jobs:
       
   create-repo:
     needs: [init-env,create-agent]
-    uses: ./.github/workflows/create-system-sync-repo.yaml
+    uses: rafay-presales/provision-project-demo/.github/workflows/create-system-sync-repo.yaml@main
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
@@ -60,7 +60,7 @@ jobs:
       
   create-pipeline:
     needs: [init-env,create-repo]
-    uses: ./.github/workflows/create-system-sync-pipeline.yaml
+    uses: rafay-presales/provision-project-demo/.github/workflows/create-system-sync-pipeline.yaml@main
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}

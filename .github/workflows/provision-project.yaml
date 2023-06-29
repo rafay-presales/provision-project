@@ -41,14 +41,14 @@ jobs:
       
   create-project:
     needs: [init-env]
-    uses: ./.github/workflows/create-project.yaml
+    uses: rafay-presales/provision-project-demo/.github/workflows/create-project.yaml@main
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       
   create-repository:
     needs: [init-env,create-project]
-    uses: ./.github/workflows/create-repository.yaml
+    uses: rafay-presales/provision-project-demo/.github/workflows/create-repository.yaml@main
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
@@ -56,7 +56,7 @@ jobs:
       
   create-namespace:
     needs: [init-env,create-project]
-    uses: ./.github/workflows/create-namespace.yaml
+    uses: rafay-presales/provision-project-demo/.github/workflows/create-namespace.yaml@main
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
@@ -64,7 +64,7 @@ jobs:
       
   create-addon:
     needs: [init-env,create-repository,create-namespace]
-    uses: ./.github/workflows/create-addon.yaml
+    uses: rafay-presales/provision-project-demo/.github/workflows/create-addon.yaml@main
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
@@ -72,7 +72,7 @@ jobs:
       
   create-credential:
     needs: [init-env,create-project]
-    uses: ./.github/workflows/create-credential.yaml
+    uses: rafay-presales/provision-project-demo/.github/workflows/create-credential.yaml@main
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
@@ -80,7 +80,7 @@ jobs:
       
   create-blueprint:
     needs: [init-env,create-addon]
-    uses: ./.github/workflows/create-blueprint.yaml
+    uses: rafay-presales/provision-project-demo/.github/workflows/create-blueprint.yaml@main
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
@@ -88,7 +88,7 @@ jobs:
       
   create-cluster-template:
     needs: [init-env,create-project]
-    uses: ./.github/workflows/create-cluster-template.yaml
+    uses: rafay-presales/provision-project-demo/.github/workflows/create-cluster-template.yaml@main
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
@@ -96,7 +96,7 @@ jobs:
       
   create-cluster-template-snapshot:
     needs: [init-env,create-cluster-template,create-blueprint,create-credential]
-    uses: ./.github/workflows/create-cluster-template-snapshot.yaml
+    uses: rafay-presales/provision-project-demo/.github/workflows/create-cluster-template-snapshot.yaml@main
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
@@ -104,7 +104,7 @@ jobs:
       
   create-cluster:
     needs: [init-env,create-cluster-template-snapshot]
-    uses: ./.github/workflows/create-cluster.yaml
+    uses: rafay-presales/provision-project-demo/.github/workflows/create-cluster.yaml@main
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
@@ -113,9 +113,9 @@ jobs:
   system-sync-setup:
     if: ${{ github.event.inputs.system-sync }}
     needs: [init-env,create-cluster]
-    uses: ./.github/workflows/system-sync-setup.yaml
+    uses: rafay-presales/provision-project-demo/.github/workflows/system-sync-setup.yaml@main
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
-      recreate-sync-repo: ${{  needs.init-env.outputs.RECREATE_SYNC_REPO }}
+      recreate-sync-repo: ${{  fromJSON(needs.init-env.outputs.RECREATE_SYNC_REPO) }}
