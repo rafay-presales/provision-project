@@ -18,7 +18,7 @@ addons:
   version: latest
 managedNodeGroups:
 - amiFamily: AmazonLinux2
-  desiredCapacity: 1
+  desiredCapacity: 2
   iam:
     withAddonPolicies:
       albIngress: true
