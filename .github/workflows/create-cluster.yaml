@@ -35,7 +35,7 @@ jobs:
       RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
       RCTL_PROJECT: ${{ inputs.project }}
       CLUSTER_TYPE: ${{ inputs.type }}
-      CLUSTER_NAME: ${{ inputs.project }}-${{ inputs.type }}
+      CLUSTER_NAME: ${{ inputs.project }}-${{ inputs.type }}-1
     steps:
     - name: Checkout
       uses: actions/checkout@v3
