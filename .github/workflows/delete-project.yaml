@@ -39,14 +39,18 @@ jobs:
     - name: delete-blueprint
       shell: bash
       run: rctl delete blueprint -p $RCTL_PROJECT $CLUSTER_TYPE-presales --v3 --wait
-    - name: delete-gke-addon
+    - name: delete-gke-addon-ns
       shell: bash
       if: ${{ github.event.inputs.type == 'gke' }}
-      run: rctl delete addon -p $RCTL_PROJECT secrets-store-csi-driver-provider-gcp --wait
-    - name: delete-eks-addon
+      run: |
+        rctl delete addon -p $RCTL_PROJECT secrets-store-csi-driver-provider-gcp --wait
+        rctl delete ns -p $RCTL_PROJECT secrets-store-csi-gcp --wait
+    - name: delete-eks-addon-ns
       shell: bash
       if: ${{ github.event.inputs.type == 'eks' }}
-      run: rctl delete addon -p $RCTL_PROJECT autoscaler-addon --wait
+      run: |
+        rctl delete addon -p $RCTL_PROJECT autoscaler-addon --wait
+        rctl delete ns -p $RCTL_PROJECT autoscaler --wait
     - name: delete-project
       shell: bash
       run: rctl delete project $RCTL_PROJECT --wait
