@@ -45,7 +45,7 @@ metadata:
     email: se-team@rafay.co
     env: cs-demo
     group: presales
-  version: "1.26"
+  version: "1.25"
 vpc:
   cidr: 192.168.0.0/16
   clusterEndpoints:
