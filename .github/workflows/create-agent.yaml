@@ -8,6 +8,9 @@ on:
       type:
         required: true
         type: string
+      cluster-name:
+        required: false
+        type: string
   workflow_dispatch:
     inputs:
       project:
@@ -19,22 +22,32 @@ on:
         options: 
         - eks
         - gke
+      cluster-name:
+        required: false
+        description: Override default cluster name of `{project}-{type}-1`
+        type: string
 jobs:
   create-agent:
     runs-on: ubuntu-latest
+    env:
+      RCTL_REST_ENDPOINT: 'console.rafay.dev'
+      RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
+      RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
+      RCTL_PROJECT: ${{ inputs.project }}
+      CLUSTER_TYPE: ${{ inputs.type }}
+      CLUSTER_NAME: ${{ inputs.project }}-${{ inputs.type }}-1
     steps:
     - name: checkout
       uses: actions/checkout@v3
+    - name: cluster-name-from-input
+      if: ${{ inputs.cluster-name }}
+      env:
+        CLUSTER_NAME: ${{ inputs.cluster-name }}
+      run: echo "CLUSTER_NAME=$CLUSTER_NAME" >> $GITHUB_ENV
     - name: Setup rctl
       uses: rafay-presales/rctl-setup@main
     - name: create-agent
       shell: bash
-      env:
-        RCTL_REST_ENDPOINT: 'console.rafay.dev'
-        RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
-        RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
-        RCTL_PROJECT: ${{ inputs.project }}
-        CLUSTER_TYPE: ${{ inputs.type }}
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" system-sync/agent.yaml
         yq e -i ".metadata.name = \"$CLUSTER_TYPE-system-sync\"" system-sync/agent.yaml

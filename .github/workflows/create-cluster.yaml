@@ -24,6 +24,7 @@ on:
         default: "demo-1"
       cluster-name:
         required: false
+        description: Override default cluster name of `{project}-{type}-1`
         type: string
 
 jobs:
