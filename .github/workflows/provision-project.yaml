@@ -14,7 +14,7 @@ on:
         - gke
       project:
         description: 'project'
-        default: "demo-1"
+        default: "api-team"
       system-sync:
         type: boolean
         description: 'Include System Sync'
@@ -25,7 +25,7 @@ on:
         default: true
 
 env:
-  PROJECT: ${{ github.event.inputs.project || 'demo-1' }}
+  PROJECT: ${{ github.event.inputs.project || 'api-team' }}
   CLUSTER_TYPE: ${{ github.event.inputs.type || 'eks' }}
   RECREATE_SYNC_REPO: ${{ github.event.inputs.recreate-sync-repo || true }}
 

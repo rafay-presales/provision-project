@@ -18,7 +18,7 @@ on:
         - gke
       project:
         description: 'project'
-        default: "demo-1"
+        default: "api-team"
 
 jobs:
   create-cluster-template:

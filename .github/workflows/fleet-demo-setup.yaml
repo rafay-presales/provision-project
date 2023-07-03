@@ -11,13 +11,13 @@ on:
         - gke
       project:
         description: 'project'
-        default: "demo-1"
+        default: "api-team"
       cluster-name:
         description: 'cluster name for second fleet cluster'
         default: "fleet-cluster-2"
 
 env:
-  PROJECT: ${{ github.event.inputs.project || 'demo-1' }}
+  PROJECT: ${{ github.event.inputs.project || 'api-team' }}
   CLUSTER_TYPE: ${{ github.event.inputs.type || 'eks' }}
   CLUSTER_NAME: ${{ github.event.inputs.cluster-name || 'fleet-cluster-2' }}
 
