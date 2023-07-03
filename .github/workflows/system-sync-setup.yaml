@@ -27,7 +27,7 @@ on:
         default: "api-team"
       cluster-name:
         required: true
-        description: Cluster name to deploy agent
+        description: Cluster name to deploy system sync agent
         type: string
       recreate-sync-repo:
         type: boolean

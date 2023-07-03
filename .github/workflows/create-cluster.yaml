@@ -24,7 +24,7 @@ on:
         default: "api-team"
       cluster-name:
         required: false
-        description: Override default cluster name of `{project}-{type}-1`
+        description: Override default cluster name of `{project}-{type}-{github.run_number}`
         type: string
 
 jobs:
