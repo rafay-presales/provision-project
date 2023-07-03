@@ -2,27 +2,17 @@ name: delete clusters
 on:
   workflow_call:
     inputs:
-      type:
-        required: true
-        type: string
       project:
         required: true
         type: string
   workflow_dispatch:
     inputs:
-      type:
-        type: choice
-        description: Type of cluster to provision
-        options: 
-        - gke
-        - eks
       project:
         description: 'project to delete all clusters'
         default: "api-team"
 
 env:
   PROJECT: ${{ github.event.inputs.project || 'api-team' }}
-  CLUSTER_TYPE: ${{ github.event.inputs.type || 'eks' }}
 
 jobs:
   delete-clusters:

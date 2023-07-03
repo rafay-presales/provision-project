@@ -35,7 +35,6 @@ jobs:
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
-      type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
       
   delete-project:
     needs: [init-env,delete-cluster]
