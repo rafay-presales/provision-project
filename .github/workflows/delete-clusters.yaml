@@ -1,4 +1,4 @@
-name: delete cluster
+name: delete clusters
 on:
   workflow_call:
     inputs:
@@ -17,7 +17,7 @@ on:
         - gke
         - eks
       project:
-        description: 'project'
+        description: 'project to delete all clusters'
         default: "api-team"
 
 env:
@@ -25,17 +25,25 @@ env:
   CLUSTER_TYPE: ${{ github.event.inputs.type || 'eks' }}
 
 jobs:
-  delete-cluster:
+  delete-clusters:
     runs-on: ubuntu-latest
     steps:
     - name: Setup rctl
       uses: rafay-presales/rctl-setup@main
-    - name: delete-cluster
+    - name: delete-clusters
       env:
         RCTL_REST_ENDPOINT: 'console.rafay.dev'
         RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
         RCTL_PROJECT: ${{ inputs.project }}
-        CLUSTER_TYPE: ${{ inputs.type }}
-      run: rctl delete cluster $RCTL_PROJECT-$CLUSTER_TYPE-1 -y -p $RCTL_PROJECT --wait
+      run: |
+        rctl get clusters -o yaml > clusters.yaml
+        readarray clusters < <(yq e -o=j -I=0 '.[]' clusters.yaml )
+        for cluster in "${clusters[@]}"; do
+          # identity mapping is a yaml snippet representing a single entry
+          CLUSTER_NAME=$(echo "$cluster" | yq e '.name' -)
+          echo "cluster name: $CLUSTER_NAME"
+          rctl delete cluster $CLUSTER_NAME -y -p $RCTL_PROJECT --wait
+        done
+        
       shell: bash

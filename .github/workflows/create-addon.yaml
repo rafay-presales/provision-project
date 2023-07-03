@@ -8,6 +8,9 @@ on:
       type:
         required: true
         type: string
+      cluster-name:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       project:
@@ -34,8 +37,9 @@ jobs:
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
         RCTL_PROJECT: ${{ inputs.project }}
         CLUSTER_TYPE: ${{ inputs.type }}
+        CLUSTER_NAME: ${{ inputs.cluster-name }}
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" $CLUSTER_TYPE/addon.yaml
-        yq e -i "(..|select(has(\"autoDiscovery.clusterName\")).[\"autoDiscovery.clusterName\"]) |= \"$RCTL_PROJECT-$CLUSTER_TYPE-1\"" $CLUSTER_TYPE/addon.yaml
+        yq e -i "(..|select(has(\"autoDiscovery.clusterName\")).[\"autoDiscovery.clusterName\"]) |= \"$CLUSTER_NAME\"" $CLUSTER_TYPE/addon.yaml
         rctl apply -f $CLUSTER_TYPE/addon.yaml
       shell: bash

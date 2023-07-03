@@ -28,6 +28,7 @@ env:
   PROJECT: ${{ github.event.inputs.project || 'api-team' }}
   CLUSTER_TYPE: ${{ github.event.inputs.type || 'eks' }}
   RECREATE_SYNC_REPO: ${{ github.event.inputs.recreate-sync-repo || true }}
+  CLUSTER_NAME: ${{ inputs.project }}-${{ inputs.type }}-${{ github.run_number }}
 
 jobs:
   init-env:
@@ -36,6 +37,7 @@ jobs:
       PROJECT: ${{ env.PROJECT }}
       CLUSTER_TYPE: ${{ env.CLUSTER_TYPE }}
       RECREATE_SYNC_REPO: ${{ env.RECREATE_SYNC_REPO }}
+      CLUSTER_NAME: ${{ env.CLUSTER_NAME }}
     steps:
       - run: echo "null"
       
@@ -118,4 +120,5 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      cluster-name: ${{  needs.init-env.outputs.CLUSTER_NAME }}
       recreate-sync-repo: ${{  fromJSON(needs.init-env.outputs.RECREATE_SYNC_REPO) }}

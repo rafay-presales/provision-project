@@ -23,8 +23,8 @@ on:
         description: 'project'
         default: "api-team"
       cluster-name:
-        required: false
-        description: Override default cluster name of `{project}-{type}-1`
+        required: true
+        description: Cluster name to deploy agent
         type: string
       recreate-sync-repo:
         type: boolean
@@ -34,7 +34,7 @@ on:
 env:
   PROJECT: ${{ github.event.inputs.project || 'api-team' }}
   CLUSTER_TYPE: ${{ github.event.inputs.type || 'eks' }}
-  CLUSTER_NAME: ${{ github.event.inputs.cluster-name || github.env.PROJECT-github.env.CLUSTER_TYPE-1 }}
+  CLUSTER_NAME: ${{ github.event.inputs.cluster-name || github.env.PROJECT-github.env.CLUSTER_TYPE-github.run_number }}
   RECREATE_SYNC_REPO: ${{ github.event.inputs.recreate-sync-repo || true }}
 
 jobs:
@@ -54,7 +54,6 @@ jobs:
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
-      type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
       cluster-name: ${{  needs.init-env.outputs.CLUSTER_NAME }}
       
   create-repo:

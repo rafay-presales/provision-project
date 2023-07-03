@@ -31,7 +31,7 @@ jobs:
       
   delete-cluster:
     needs: [init-env]
-    uses: rafay-presales/provision-project-demo/.github/workflows/delete-cluster.yaml@main
+    uses: rafay-presales/provision-project-demo/.github/workflows/delete-clusters.yaml@main
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
