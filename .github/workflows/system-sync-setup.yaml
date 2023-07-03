@@ -21,7 +21,7 @@ on:
         description: Type of cluster to provision
         options: 
         - eks
-        - gke'
+        - gke
       project:
         description: 'project'
         default: "api-team"
@@ -31,7 +31,7 @@ on:
         type: string
       recreate-sync-repo:
         type: boolean
-        description: 'Recreate System Sync Repository - will delete all contents'
+        description: 'Recreate System Sync Repository - will delete all contents of System Syn repository'
         default: true
 
 env:
@@ -57,6 +57,7 @@ jobs:
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
+      type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
       cluster-name: ${{  needs.init-env.outputs.CLUSTER_NAME }}
       
   create-repo:
