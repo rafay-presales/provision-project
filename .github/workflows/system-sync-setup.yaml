@@ -9,6 +9,9 @@ on:
       type:
         required: true
         type: string
+      cluster-name:
+        required: true
+        type: string
       recreate-sync-repo:
         type: boolean
   workflow_dispatch:
