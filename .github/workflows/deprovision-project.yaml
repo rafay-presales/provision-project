@@ -8,12 +8,12 @@ on:
     inputs:
       type:
         type: choice
-        description: Type of cluster to provision
+        description: Type of cluster to deprovision
         options: 
         - eks
         - gke
       project:
-        description: 'project'
+        description: 'The project to deprovision. WARNING: All clusters in the project will be deleted.'
         default: "api-team"
 
 env:
