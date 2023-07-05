@@ -13,11 +13,20 @@ spec:
 ---
 apiVersion: rafay.io/v1alpha5
 kind: ClusterConfig
+metadata:
+  name: eks-2
+  region: us-west-2
+  tags:
+    email: kurt.madel@rafay.co
+    env: cs-demo
+    group: presales
+  version: "1.24"
 addons:
 - name: aws-ebs-csi-driver
   version: latest
 managedNodeGroups:
-- amiFamily: AmazonLinux2
+- name: default-node-group
+  amiFamily: AmazonLinux2
   desiredCapacity: 2
   iam:
     withAddonPolicies:
@@ -31,21 +40,14 @@ managedNodeGroups:
   - t3.xlarge
   maxSize: 5
   minSize: 1
-  name: default-node-group
   privateNetworking: false
   securityGroups:
     attachIDs: []
   tags: {}
   volumeEncrypted: false
   volumeType: gp3
-metadata:
-  name: eks-2
-  region: us-west-2
-  tags:
-    email: kurt.madel@rafay.co
-    env: cs-demo
-    group: presales
-  version: "1.24"
+  preBootstrapCommands:
+    - adduser -c "" -m added-user
 vpc:
   cidr: 192.168.0.0/16
   clusterEndpoints:
