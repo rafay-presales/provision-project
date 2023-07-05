@@ -28,7 +28,7 @@ env:
   PROJECT: ${{ github.event.inputs.project || 'api-team' }}
   CLUSTER_TYPE: ${{ github.event.inputs.type || 'eks' }}
   RECREATE_SYNC_REPO: ${{ github.event.inputs.recreate-sync-repo || true }}
-  CLUSTER_NAME: ${{ inputs.project }}-${{ inputs.type }}-demo-${{ github.run_number }}
+  CLUSTER_NAME: ${{ inputs.project }}-${{ inputs.type }}-${{ github.run_number }}-demo
 
 jobs:
   init-env:
