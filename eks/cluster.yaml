@@ -45,7 +45,7 @@ metadata:
     email: kurt.madel@rafay.co
     env: cs-demo
     group: presales
-  version: "1.25"
+  version: "1.24"
 vpc:
   cidr: 192.168.0.0/16
   clusterEndpoints:
