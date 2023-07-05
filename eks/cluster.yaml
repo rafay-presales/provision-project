@@ -42,7 +42,7 @@ metadata:
   name: eks-2
   region: us-west-2
   tags:
-    email: se-team@rafay.co
+    email: kurt.madel@rafay.co
     env: cs-demo
     group: presales
   version: "1.25"
