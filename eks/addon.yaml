@@ -10,7 +10,6 @@ spec:
     options:
       setString:
       - awsRegion=us-west-2
-      - autoDiscovery.clusterName=REPLACE_CLUSTER_NAME
     type: Helm
   namespace: autoscaler
   sharing: {}

@@ -1,0 +1,10 @@
+kind: ClusterOverride
+apiVersion: config.rafay.dev/v2
+metadata:
+  name: autoscaler-cluster-override
+spec:
+  clusterSelector: rafay.dev/clusterName in (REPLACE_CLUSTER_NAME)
+  resourceSelector: rafay.dev/name=autoscaler-addon
+  type: ClusterOverrideTypeAddon
+  overrideValues: |
+    autoDiscovery.clusterName: REPLACE_CLUSTER_NAME
