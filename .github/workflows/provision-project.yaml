@@ -112,6 +112,7 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      cluster-name: ${{  needs.init-env.outputs.CLUSTER_NAME }}
       
   system-sync-setup:
     if: ${{ github.event.inputs.system-sync }}
