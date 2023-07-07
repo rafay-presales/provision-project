@@ -37,7 +37,7 @@ on:
 env:
   PROJECT: ${{ github.event.inputs.project || 'api-team' }}
   CLUSTER_TYPE: ${{ github.event.inputs.type || 'eks' }}
-  CLUSTER_NAME: ${{ github.event.inputs.cluster-name || github.env.PROJECT-github.env.CLUSTER_TYPE-github.run_number }}
+  CLUSTER_NAME: ${{ github.event.inputs.cluster-name }}
   RECREATE_SYNC_REPO: ${{ github.event.inputs.recreate-sync-repo || true }}
 
 jobs:
@@ -46,7 +46,7 @@ jobs:
     outputs:
       PROJECT: ${{ env.PROJECT }}
       CLUSTER_TYPE: ${{ env.CLUSTER_TYPE }}
-      CLUSTER_NAME: ${{ env.CLUSTER_NAME }}
+      CLUSTER_NAME: ${{ inputs.cluster-name || env.CLUSTER_NAME }}
       RECREATE_SYNC_REPO: ${{ env.RECREATE_SYNC_REPO }}
     steps:
       - run: echo "null"
