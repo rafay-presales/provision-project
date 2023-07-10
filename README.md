@@ -1,6 +1,7 @@
 # provision-project
 
 [![provision project demo](https://github.com/rafay-presales/provision-project-demo/actions/workflows/provision-project.yaml/badge.svg)](https://github.com/rafay-presales/provision-project-demo/actions/workflows/provision-project.yaml)
+
 Provision a project with a cluster from cluster template and custom blueprint.
 
 Includes:
