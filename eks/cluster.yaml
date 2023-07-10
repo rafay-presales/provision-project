@@ -25,14 +25,14 @@ addons:
 - name: aws-ebs-csi-driver
   version: latest
 availabilityZones:
+- us-west-2a
 - us-west-2b
-- us-west-2c
 managedNodeGroups:
 - name: default-node-group
   amiFamily: AmazonLinux2
   availabilityZones:
+  - us-west-2a
   - us-west-2b
-  - us-west-2c
   desiredCapacity: 2
   iam:
     withAddonPolicies:
