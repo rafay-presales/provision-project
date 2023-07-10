@@ -3,7 +3,7 @@ name: provision project demo
 on:
   schedule:
     # Runs "Mon-Fri at 07:10 EDT"
-    - cron: '10 11 * * 1-5' 
+    - cron: '4 12 * * 1-5' 
   workflow_dispatch:
     inputs:
       type:
@@ -28,7 +28,7 @@ env:
   PROJECT: ${{ github.event.inputs.project || 'api-team' }}
   CLUSTER_TYPE: ${{ github.event.inputs.type || 'eks' }}
   RECREATE_SYNC_REPO: ${{ github.event.inputs.recreate-sync-repo || true }}
-  CLUSTER_NAME: ${{ inputs.project }}-${{ inputs.type }}-${{ github.run_number }}-demo
+  CLUSTER_NAME: ${{ github.event.inputs.project || 'api-team' }}-${{ github.event.inputs.type || 'eks' }}-${{ github.run_number }}-demo
 
 jobs:
   init-env:
