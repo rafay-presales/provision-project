@@ -8,4 +8,4 @@ spec:
     name: REPLACE
   sharing: {}
   type: Cluster
-  version: r1.26.0
+  version: r1.25.0
