@@ -50,6 +50,6 @@ jobs:
       shell: bash
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" system-sync/agent.yaml
-        yq e -i ".metadata.name = \"$CLUSTER_TYPE-system-sync\"" system-sync/agent.yaml
+        yq e -i ".metadata.name = \"$CLUSTER_TYPE-system-sync-$GITHUB_RUN_NUMBER\"" system-sync/agent.yaml
         yq e -i ".spec.cluster.name = \"$CLUSTER_NAME\"" system-sync/agent.yaml
         rctl apply -f system-sync/agent.yaml
