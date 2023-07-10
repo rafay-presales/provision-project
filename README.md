@@ -1,6 +1,8 @@
 # provision-project
 Provision a project with a cluster from cluster template and custom blueprint.
 
+[![provision project demo](https://github.com/rafay-presales/provision-project-demo/actions/workflows/provision-project.yaml/badge.svg)](https://github.com/rafay-presales/provision-project-demo/actions/workflows/provision-project.yaml)
+
 Includes:
 - Creating a new Rafay project
 - Creating credentials with Action Secrets
