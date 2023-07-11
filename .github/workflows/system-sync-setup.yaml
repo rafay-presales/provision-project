@@ -9,6 +9,9 @@ on:
       type:
         required: true
         type: string
+      rafay-environment:
+        required: true
+        type: string
       cluster-name:
         required: true
         type: string
@@ -25,6 +28,12 @@ on:
       project:
         description: 'project'
         default: "api-team"
+      rafay-environment:
+        type: choice
+        description: Rafay console environment
+        options: 
+        - prod
+        - preview
       cluster-name:
         required: true
         description: Cluster name to deploy system sync agent
@@ -39,12 +48,14 @@ env:
   CLUSTER_TYPE: ${{ github.event.inputs.type || 'eks' }}
   CLUSTER_NAME: ${{ github.event.inputs.cluster-name }}
   RECREATE_SYNC_REPO: ${{ github.event.inputs.recreate-sync-repo || true }}
+  RAFAY_ENVIRONMENT: ${{ inputs.rafay-environment || 'prod' }}
 
 jobs:
   init-env:
     runs-on: ubuntu-latest
     outputs:
       PROJECT: ${{ env.PROJECT }}
+      RAFAY_ENVIRONMENT: ${{ env.RAFAY_ENVIRONMENT }}
       CLUSTER_TYPE: ${{ env.CLUSTER_TYPE }}
       CLUSTER_NAME: ${{ inputs.cluster-name || env.CLUSTER_NAME }}
       RECREATE_SYNC_REPO: ${{ env.RECREATE_SYNC_REPO }}
@@ -58,6 +69,7 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      rafay-environment: ${{  needs.init-env.outputs.RAFAY_ENVIRONMENT }}
       cluster-name: ${{  needs.init-env.outputs.CLUSTER_NAME }}
       
   create-repo:
@@ -67,6 +79,7 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      rafay-environment: ${{  needs.init-env.outputs.RAFAY_ENVIRONMENT }}
       
   create-pipeline:
     needs: [init-env,create-repo]
@@ -75,4 +88,5 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      rafay-environment: ${{  needs.init-env.outputs.RAFAY_ENVIRONMENT }}
       recreate-sync-repo: ${{  fromJSON(needs.init-env.outputs.RECREATE_SYNC_REPO) }}

@@ -64,6 +64,7 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      rafay-environment: ${{ needs.init-env.outputs.RAFAY_ENVIRONMENT }}
       
   create-namespace:
     needs: [init-env,create-project]
@@ -72,6 +73,7 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      rafay-environment: ${{ needs.init-env.outputs.RAFAY_ENVIRONMENT }}
       
   create-addon:
     needs: [init-env,create-repository,create-namespace]
@@ -81,6 +83,7 @@ jobs:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
       cluster-name: ${{  needs.init-env.outputs.CLUSTER_NAME }}
+      rafay-environment: ${{ needs.init-env.outputs.RAFAY_ENVIRONMENT }}
       
   create-credential:
     needs: [init-env,create-project]
@@ -89,6 +92,7 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      rafay-environment: ${{ needs.init-env.outputs.RAFAY_ENVIRONMENT }}
       
   create-blueprint:
     needs: [init-env,create-addon]
@@ -97,6 +101,7 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      rafay-environment: ${{ needs.init-env.outputs.RAFAY_ENVIRONMENT }}
       
   create-cluster-template:
     needs: [init-env,create-project]
@@ -105,6 +110,7 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      rafay-environment: ${{ needs.init-env.outputs.RAFAY_ENVIRONMENT }}
       
   create-cluster-template-snapshot:
     needs: [init-env,create-cluster-template,create-blueprint,create-credential]
@@ -113,6 +119,7 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      rafay-environment: ${{ needs.init-env.outputs.RAFAY_ENVIRONMENT }}
       
   create-cluster:
     needs: [init-env,create-cluster-template-snapshot]
@@ -122,6 +129,7 @@ jobs:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
       cluster-name: ${{  needs.init-env.outputs.CLUSTER_NAME }}
+      rafay-environment: ${{ needs.init-env.outputs.RAFAY_ENVIRONMENT }}
       
   system-sync-setup:
     if: ${{ github.event.inputs.system-sync }}
@@ -131,5 +139,6 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      rafay-environment: ${{ needs.init-env.outputs.RAFAY_ENVIRONMENT }}
       cluster-name: ${{  needs.init-env.outputs.CLUSTER_NAME }}
       recreate-sync-repo: ${{  fromJSON(needs.init-env.outputs.RECREATE_SYNC_REPO) }}
