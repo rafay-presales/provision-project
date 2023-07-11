@@ -46,7 +46,9 @@ jobs:
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
         RCTL_PROJECT: ${{ inputs.project }}
         CLUSTER_TYPE: ${{ inputs.type }}
-      run: |
-        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" $CLUSTER_TYPE/blueprint.yaml
+        AWS_COST_PROFILE_VERSION: ${{ secrets.AWS_COST_PROFILE_VERSION }}
+      run: | 
+        yq e -i ".spec.costProfile.version = \"$AWS_COST_PROFILE_VERSION\"" eks/blueprint.yaml
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" $CLUSTER_TYPE/blueprint.yaml 
         rctl apply -f $CLUSTER_TYPE/blueprint.yaml
       shell: bash
