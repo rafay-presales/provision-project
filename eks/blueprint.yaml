@@ -10,7 +10,6 @@ spec:
   costProfile:
     enabled: true
     name: default-cost-profile-aws
-    version: version-1673434684
   defaultAddons:
     csiSecretStoreConfig:
       providers:
