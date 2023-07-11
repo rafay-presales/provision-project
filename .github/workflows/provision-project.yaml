@@ -13,8 +13,14 @@ on:
         - eks
         - gke
       project:
-        description: 'project'
+        description: 'Name of Rafay project to create'
         default: "api-team"
+      rafay-environment:
+        type: choice
+        description: Rafay console environment
+        options: 
+        - prod
+        - preview
       system-sync:
         type: boolean
         description: 'Include System Sync'
@@ -29,6 +35,7 @@ env:
   CLUSTER_TYPE: ${{ github.event.inputs.type || 'eks' }}
   RECREATE_SYNC_REPO: ${{ github.event.inputs.recreate-sync-repo || true }}
   CLUSTER_NAME: ${{ github.event.inputs.project || 'api-team' }}-${{ github.event.inputs.type || 'eks' }}-${{ github.run_number }}-demo
+  RAFAY_ENVIRONMENT: ${{ github.event.inputs.rafay-environment || 'prod' }}
 
 jobs:
   init-env:
@@ -38,6 +45,7 @@ jobs:
       CLUSTER_TYPE: ${{ env.CLUSTER_TYPE }}
       RECREATE_SYNC_REPO: ${{ env.RECREATE_SYNC_REPO }}
       CLUSTER_NAME: ${{ env.CLUSTER_NAME }}
+      RAFAY_ENVIRONMENT: ${{ env.RAFAY_ENVIRONMENT }}
     steps:
       - run: echo "null"
       
@@ -47,6 +55,7 @@ jobs:
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
+      rafay-environment: ${{ needs.init-env.outputs.RAFAY_ENVIRONMENT }}
       
   create-repository:
     needs: [init-env,create-project]
