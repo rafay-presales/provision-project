@@ -20,7 +20,7 @@ metadata:
     email: kurt.madel@rafay.co
     env: cs-demo
     group: presales
-  version: "1.25"
+  version: "1.26"
 addons:
 - name: aws-ebs-csi-driver
   version: latest
@@ -53,7 +53,13 @@ managedNodeGroups:
   volumeEncrypted: false
   volumeType: gp3
   preBootstrapCommands:
-    - adduser -c "" -m added-user
+    - sudo adduser -c "" -m added-user
+    - sudo su - newuser
+    - mkdir .ssh
+    - chmod 700 .ssh
+    - touch .ssh/authorized_keys
+    - chmod 600 .ssh/authorized_keys
+    - 
 vpc:
   cidr: 192.168.0.0/16
   clusterEndpoints:

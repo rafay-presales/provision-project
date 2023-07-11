@@ -27,13 +27,13 @@ jobs:
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
         RCTL_PROJECT: ${{ inputs.project }}
       run: |
-        rctl get clusters -o yaml > clusters.yaml
+        rctl get clusters --project $RCTL_PROJECT -o yaml > clusters.yaml
         readarray clusters < <(yq e -o=j -I=0 '.[]' clusters.yaml )
         for cluster in "${clusters[@]}"; do
           # identity mapping is a yaml snippet representing a single entry
           CLUSTER_NAME=$(echo "$cluster" | yq e '.name' -)
           echo "cluster name: $CLUSTER_NAME"
-          rctl delete cluster $CLUSTER_NAME -y -p $RCTL_PROJECT --wait
+          rctl delete cluster $CLUSTER_NAME -y --project $RCTL_PROJECT --wait
         done
         
       shell: bash
