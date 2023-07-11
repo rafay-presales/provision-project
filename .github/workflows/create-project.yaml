@@ -34,7 +34,7 @@ jobs:
       uses: rafay-presales/rctl-setup@main
     - name: create-project
       env:
-        RCTL_REST_ENDPOINT: 'secrets.RCTL_REST_ENDPOINT'
+        RCTL_REST_ENDPOINT: ${{ secrets.RCTL_REST_ENDPOINT }}
         RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
         RCTL_PROJECT: ${{ inputs.project }}
