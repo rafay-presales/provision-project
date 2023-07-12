@@ -54,11 +54,12 @@ managedNodeGroups:
   volumeType: gp3
   preBootstrapCommands:
     - sudo adduser -c "" -m ubuntu
-    - sudo su - ubuntu
+    - cd /home/ubuntu
     - mkdir .ssh
     - chmod 700 .ssh
     - base64 -d <<< "REPLACE_SSH_PUBLIC_KEY" > .ssh/authorized_keys
     - chmod 600 .ssh/authorized_keys
+    - chown -R ubuntu:ubuntu .ssh
 vpc:
   cidr: 192.168.0.0/16
   clusterEndpoints:
