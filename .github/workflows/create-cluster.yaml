@@ -48,6 +48,7 @@ jobs:
       RCTL_PROJECT: ${{ inputs.project }}
       CLUSTER_TYPE: ${{ inputs.type }}
       CLUSTER_NAME: ${{ inputs.project }}-${{ inputs.type }}-${{ github.run_number }}-demo
+      SSH_PUBLC_KEY: ${{ secrets.SSH_PUBLC_KEY }}
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -62,6 +63,9 @@ jobs:
       run: |
         yq e -i "(select(documentIndex == 0) | .metadata.project) = \"$RCTL_PROJECT\"" $CLUSTER_TYPE/cluster.yaml
         yq e -i ".metadata.name = \"$CLUSTER_NAME\"" $CLUSTER_TYPE/cluster.yaml
+        ENCODED_SSH_KEY = echo $SSH_PUBLC_KEY | base64 -e
+        more $ENCODED_SSH_KEY
+        sed -i "s/REPLACE_SSH_PUBLIC_KEY/$ENCODED_SSH_KEY/g" $CLUSTER_TYPE/cluster.yaml
         more $CLUSTER_TYPE/cluster.yaml
         rctl apply -f $CLUSTER_TYPE/cluster.yaml -p $RCTL_PROJECT --wait
       shell: bash
