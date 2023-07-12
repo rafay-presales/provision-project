@@ -20,9 +20,6 @@ on:
         - prod
         - preview
 
-env:
-  PROJECT: ${{ github.event.inputs.project || 'api-team' }}
-
 jobs:
   delete-clusters:
     environment:

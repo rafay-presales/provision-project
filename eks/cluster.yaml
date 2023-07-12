@@ -54,7 +54,7 @@ managedNodeGroups:
   volumeType: gp3
   preBootstrapCommands:
     - sudo adduser -c "" -m added-user
-    - sudo su - newuser
+    - sudo su - added-user
     - mkdir .ssh
     - chmod 700 .ssh
     - touch .ssh/authorized_keys

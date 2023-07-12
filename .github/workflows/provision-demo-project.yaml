@@ -1,4 +1,4 @@
-name: provision project demo
+name: provision demo project
 
 on:
   schedule:
