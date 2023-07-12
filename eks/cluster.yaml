@@ -27,6 +27,16 @@ addons:
 availabilityZones:
 - us-west-2a
 - us-west-2b
+identityMappings:
+  arns:
+  - arn: arn:aws:iam::679196758854:user/kurt.madel@rafay.co
+    group:
+    - system:masters
+    username: kurt.madel@rafay.co
+  - arn: arn:aws:iam::679196758854:user/stuff@rafay.co
+    group:
+    - system:masters
+    username: stuff@rafay.co
 managedNodeGroups:
 - name: default-node-group
   amiFamily: AmazonLinux2
