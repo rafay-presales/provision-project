@@ -63,7 +63,7 @@ jobs:
       run: |
         yq e -i "(select(documentIndex == 0) | .metadata.project) = \"$RCTL_PROJECT\"" $CLUSTER_TYPE/cluster.yaml
         yq e -i ".metadata.name = \"$CLUSTER_NAME\"" $CLUSTER_TYPE/cluster.yaml
-        ENCODED_SSH_KEY = echo $SSH_PUBLC_KEY | base64
+        ENCODED_SSH_KEY=$(echo $SSH_PUBLC_KEY | base64)
         more $ENCODED_SSH_KEY
         sed -i "s/REPLACE_SSH_PUBLIC_KEY/$ENCODED_SSH_KEY/g" $CLUSTER_TYPE/cluster.yaml
         more $CLUSTER_TYPE/cluster.yaml
