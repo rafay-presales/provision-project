@@ -12,6 +12,12 @@ on:
         options: 
         - eks
         - gke
+      rafay-environment:
+        type: choice
+        description: Rafay console environment
+        options: 
+        - prod
+        - preview
       project:
         description: 'The project to deprovision. WARNING: All clusters in the project will be deleted.'
         default: "api-team"
@@ -19,6 +25,7 @@ on:
 env:
   PROJECT: ${{ github.event.inputs.project || 'api-team' }}
   CLUSTER_TYPE: ${{ github.event.inputs.type || 'eks' }}
+  RAFAY_ENVIRONMENT: ${{ github.event.inputs.rafay-environment || 'prod' }}
 
 jobs:
   init-env:
@@ -26,6 +33,7 @@ jobs:
     outputs:
       PROJECT: ${{ env.PROJECT }}
       CLUSTER_TYPE: ${{ env.CLUSTER_TYPE }}
+      RAFAY_ENVIRONMENT: ${{ env.RAFAY_ENVIRONMENT }}
     steps:
       - run: echo "null"
       
@@ -35,6 +43,7 @@ jobs:
     secrets: inherit
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
+      rafay-environment: ${{ needs.init-env.outputs.RAFAY_ENVIRONMENT }}
       
   delete-project:
     needs: [init-env,delete-cluster]
@@ -43,3 +52,4 @@ jobs:
     with:
       project: ${{  needs.init-env.outputs.PROJECT }}
       type: ${{  needs.init-env.outputs.CLUSTER_TYPE }}
+      rafay-environment: ${{ needs.init-env.outputs.RAFAY_ENVIRONMENT }}
