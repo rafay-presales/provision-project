@@ -62,6 +62,7 @@ managedNodeGroups:
   tags: {}
   volumeEncrypted: false
   volumeType: gp3
+  # each preBootstrapCommands is executed by the root user at the root of the filesystem; regardless if you change directory in a previous command
   preBootstrapCommands:
     - sudo adduser -c "" -m ubuntu
     - mkdir /home/ubuntu/.ssh
