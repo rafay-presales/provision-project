@@ -30,8 +30,8 @@ on:
         - preview
 
 env:
-  PROJECT: ${{ github.event.inputs.project || 'api-team' }}
-  CLUSTER_TYPE: ${{ github.event.inputs.type || 'eks' }}
+  PROJECT: ${{ inputs.project || 'api-team' }}
+  CLUSTER_TYPE: ${{ inputs.type || 'eks' }}
 
 jobs:
   delete-project:
@@ -52,13 +52,13 @@ jobs:
       run: rctl delete blueprint -p $RCTL_PROJECT $CLUSTER_TYPE-presales --v3 --wait
     - name: delete-gke-addon-ns
       shell: bash
-      if: ${{ github.event.inputs.type == 'gke' }}
+      if: ${{ inputs.type == 'gke' }}
       run: |
         rctl delete addon -p $RCTL_PROJECT secrets-store-csi-driver-provider-gcp --wait
         rctl delete ns -p $RCTL_PROJECT secrets-store-csi-gcp --wait
     - name: delete-eks-addon-ns
       shell: bash
-      if: ${{ github.event.inputs.type == 'eks' }}
+      if: ${{ inputs.type == 'eks' }}
       run: |
         rctl delete addon -p $RCTL_PROJECT autoscaler-addon --wait
         rctl delete ns -p $RCTL_PROJECT autoscaler --wait
