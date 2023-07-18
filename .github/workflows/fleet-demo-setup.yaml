@@ -10,7 +10,7 @@ on:
         - eks
         - gke
       project:
-        description: 'project'
+        description: 'project - must already exist'
         default: "api-team"
       cluster-name:
         description: 'cluster name for second fleet cluster'

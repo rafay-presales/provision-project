@@ -16,7 +16,7 @@ parameters:
       allow: true
       values: []
   spec_config_controlPlaneVersion:
-    default: "1.24"
+    default: "1.25"
     override:
       allow: true
       values: []
