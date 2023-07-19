@@ -54,7 +54,7 @@ jobs:
         readarray blueprints < <(yq e -o=j -I=0 '.[]' blueprints.yaml )
         for blueprint in "${blueprints[@]}"; do
           # identity mapping is a yaml snippet representing a single entry
-          BLUEPRINT_NAME=$(echo "$blueprint" | yq e '.metadata.name' -)
+          BLUEPRINT_NAME=$(echo "$blueprint" | yq e '.blueprintname' -)
           echo "bllueprint name: $BLUEPRINT_NAME"
           rctl delete bluepring $BLUEPRINT_NAME -y --project $RCTL_PROJECT --wait
         done
