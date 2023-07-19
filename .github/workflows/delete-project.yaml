@@ -56,7 +56,7 @@ jobs:
           # identity mapping is a yaml snippet representing a single entry
           BLUEPRINT_NAME=$(echo "$blueprint" | yq e '.blueprintname' -)
           echo "bllueprint name: $BLUEPRINT_NAME"
-          rctl delete bluepring $BLUEPRINT_NAME -y --project $RCTL_PROJECT --wait
+          rctl delete bluepring $BLUEPRINT_NAME --project $RCTL_PROJECT --wait
         done
     - name: delete-namespaces
       shell: bash
@@ -67,7 +67,7 @@ jobs:
           # identity mapping is a yaml snippet representing a single entry
           NAMESPACE_NAME=$(echo "$namespace" | yq e '.metadata.name' -)
           echo "namespace name: $NAMESPACE_NAME"
-          rctl delete ns $NAMESPACE_NAME -y --project $RCTL_PROJECT --wait
+          rctl delete ns $NAMESPACE_NAME --project $RCTL_PROJECT --wait
         done
     - name: delete-project
       shell: bash
