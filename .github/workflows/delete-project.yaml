@@ -62,7 +62,7 @@ jobs:
       shell: bash
       run: |
         rctl get addons -p $RCTL_PROJECT -o yaml --v3 > addons.yaml
-        readarray addons < <(yq e -o=j -I=0 '.[]' addons.yaml )
+        readarray addons < <(yq e -o=j -I=0 '.items.[]' addons.yaml )
         for addon in "${addons[@]}"; do
           # identity mapping is a yaml snippet representing a single entry
           ADDON_NAME=$(echo "$addon" | yq e '.metadata.name' -)
