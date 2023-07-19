@@ -61,11 +61,11 @@ jobs:
     - name: delete-addons
       shell: bash
       run: |
-        rctl get addons -p $RCTL_PROJECT -o yaml > addons.yaml
+        rctl get addons -p $RCTL_PROJECT -o yaml --v3 > addons.yaml
         readarray addons < <(yq e -o=j -I=0 '.[]' addons.yaml )
         for addon in "${addons[@]}"; do
           # identity mapping is a yaml snippet representing a single entry
-          ADDON_NAME=$(echo "$addon" | yq e '.addonname' -)
+          ADDON_NAME=$(echo "$addon" | yq e '.metadata.name' -)
           echo "addon name: $ADDON_NAME"
           rctl delete addon $ADDON_NAME --project $RCTL_PROJECT --wait
         done
