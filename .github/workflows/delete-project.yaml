@@ -20,7 +20,7 @@ on:
         - eks
         - gke
       project:
-        description: 'project'
+        description: 'project to delete - WARNING: Everything in the project will be deleted.'
         default: "api-team"
       rafay-environment:
         type: choice
@@ -47,21 +47,28 @@ jobs:
     steps:
     - name: Setup rctl
       uses: rafay-presales/rctl-setup@main
-    - name: delete-blueprint
+    - name: delete-blueprints
       shell: bash
-      run: rctl delete blueprint -p $RCTL_PROJECT $CLUSTER_TYPE-presales --v3 --wait
-    - name: delete-gke-addon-ns
-      shell: bash
-      if: ${{ inputs.type == 'gke' }}
       run: |
-        rctl delete addon -p $RCTL_PROJECT secrets-store-csi-driver-provider-gcp --wait
-        rctl delete ns -p $RCTL_PROJECT secrets-store-csi-gcp --wait
-    - name: delete-eks-addon-ns
+        rctl get blueprint -p $RCTL_PROJECT -o yaml > blueprints.yaml
+        readarray blueprints < <(yq e -o=j -I=0 '.[]' blueprints.yaml )
+        for blueprint in "${blueprints[@]}"; do
+          # identity mapping is a yaml snippet representing a single entry
+          BLUEPRINT_NAME=$(echo "$blueprint" | yq e '.metadata.name' -)
+          echo "bllueprint name: $BLUEPRINT_NAME"
+          rctl delete bluepring $BLUEPRINT_NAME -y --project $RCTL_PROJECT --wait
+        done
+    - name: delete-namespaces
       shell: bash
-      if: ${{ inputs.type == 'eks' }}
       run: |
-        rctl delete addon -p $RCTL_PROJECT autoscaler-addon --wait
-        rctl delete ns -p $RCTL_PROJECT autoscaler --wait
+        rctl get ns -p $RCTL_PROJECT -o yaml > namespaces.yaml
+        readarray namespaces < <(yq e -o=j -I=0 '.[]' namespaces.yaml )
+        for namespace in "${namespaces[@]}"; do
+          # identity mapping is a yaml snippet representing a single entry
+          NAMESPACE_NAME=$(echo "$namespace" | yq e '.metadata.name' -)
+          echo "namespace name: $NAMESPACE_NAME"
+          rctl delete ns $NAMESPACE_NAME -y --project $RCTL_PROJECT --wait
+        done
     - name: delete-project
       shell: bash
       run: rctl delete project $RCTL_PROJECT --wait
