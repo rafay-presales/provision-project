@@ -8,7 +8,7 @@ spec:
   blueprintConfig:
     name: eks-presales
     version: v1
-  cloudprovider: aws-demo-credentials
+  cloudCredentials: aws-demo-credentials
   type: aws-eks
   config:
     addons:
