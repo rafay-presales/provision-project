@@ -38,7 +38,7 @@ jobs:
       run: |
         rctl get clusters --project $RCTL_PROJECT -o yaml > clusters.yaml
         CLUSTER_MATRIX="$(yq -r '.[].name | @csv' clusters.yaml)"
-        CLUSTER_MATRIX="[${CLUSTER_MATRIX//$'\n'/','}]"
+        CLUSTER_MATRIX="['${CLUSTER_MATRIX//$'\n'/\',\'}']"
         echo "$CLUSTER_MATRIX"
         echo ::set-output name=clusters::${CLUSTER_MATRIX}
     outputs:
@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        cluster: ${{ needs.cluster-matrix.outputs.clusters }}
+        cluster: ${{ fromJson(needs.cluster-matrix.outputs.clusters) }}
     steps:
     - name: Setup rctl
       uses: rafay-presales/rctl-setup@main
