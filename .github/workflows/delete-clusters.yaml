@@ -42,7 +42,6 @@ jobs:
         CLUSTER_MATRIX="$(yq -r '.[].name | @csv' clusters.yaml)"
         CLUSTER_MATRIX="['${CLUSTER_MATRIX//$'\n'/\',\'}']"
         echo "$CLUSTER_MATRIX"
-        echo ::set-output name=clusters::${CLUSTER_MATRIX}
         echo "CLUSTERS=$CLUSTER_MATRIX" >> $GITHUB_OUTPUT
   delete-clusters:
     needs: cluster-matrix
