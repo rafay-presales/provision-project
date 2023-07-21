@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        cluster: ${{ fromJson(needs.cluster-matrix.outputs.clusters) }}
+        cluster: ${{ needs.cluster-matrix.outputs.clusters }}
     steps:
     - name: Setup rctl
       uses: rafay-presales/rctl-setup@main
