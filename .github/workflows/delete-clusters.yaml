@@ -31,6 +31,8 @@ jobs:
       RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
       RCTL_PROJECT: ${{ inputs.project }}
     steps:
+    - name: Setup rctl
+      uses: rafay-presales/rctl-setup@main
     - name: create-matrix
       shell: bash
       run: |
