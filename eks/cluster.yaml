@@ -1,82 +1,71 @@
+apiVersion: infra.k8smgmt.io/v3
 kind: Cluster
 metadata:
   labels:
     rafay.co/clusterGroup: eks-presales
     k8smgmt.io/fleet: eks-presales
 spec:
-  blueprint: eks-presales
-  blueprintversion: v1
+  blueprintConfig:
+    name: eks-presales
+    version: v1
   cloudprovider: aws-demo-credentials
-  clusterConfig: null
-  cniprovider: aws-cni
-  type: eks
----
-apiVersion: rafay.io/v1alpha5
-kind: ClusterConfig
-metadata:
-  name: eks-2
-  region: us-west-2
-  tags:
-    email: kurt.madel@rafay.co
-    env: cs-demo
-    group: presales
-  version: "1.26"
-addons:
-- name: aws-ebs-csi-driver
-  version: latest
-availabilityZones:
-- us-west-2a
-- us-west-2b
-identityMappings:
-  arns:
-  - arn: arn:aws:iam::679196758854:user/kurt.madel@rafay.co
-    group:
-    - system:masters
-    username: kurt.madel@rafay.co
-  - arn: arn:aws:iam::679196758854:user/stuff@rafay.co
-    group:
-    - system:masters
-    username: stuff@rafay.co
-managedNodeGroups:
-- name: default-node-group
-  amiFamily: AmazonLinux2
-  availabilityZones:
-  - us-west-2a
-  - us-west-2b
-  desiredCapacity: 2
-  iam:
-    withAddonPolicies:
-      albIngress: true
-      appMesh: false
-      autoScaler: true
-      efs: false
-      externalDNS: true
-      imageBuilder: false
-  instanceTypes:
-  - t3.xlarge
-  maxSize: 5
-  minSize: 1
-  privateNetworking: false
-  securityGroups:
-    attachIDs: []
-  tags: {}
-  volumeEncrypted: false
-  volumeType: gp3
-  # each preBootstrapCommands is executed by the root user at the root of the filesystem; regardless if you change directory in a previous command
-  preBootstrapCommands:
-    - sudo adduser -c "" -m ubuntu
-    - mkdir /home/ubuntu/.ssh
-    - chmod 700 /home/ubuntu/.ssh
-    - base64 -d <<< "REPLACE_SSH_PUBLIC_KEY" > /home/ubuntu/.ssh/authorized_keys
-    - chmod 600 /home/ubuntu/.ssh/authorized_keys
-    - chown -R ubuntu:ubuntu /home/ubuntu/.ssh
-vpc:
-  cidr: 192.168.0.0/16
-  clusterEndpoints:
-    privateAccess: true
-    publicAccess: false
-  nat:
-    gateway: Single
-  subnets:
-    private: {}
-    public: {}
+  type: aws-eks
+  config:
+    addons:
+    - name: aws-ebs-csi-driver
+      version: latest
+    availabilityZones:
+    - us-west-2a
+    - us-west-2b
+    identityMappings:
+      arns:
+      - arn: arn:aws:iam::679196758854:user/kurt.madel@rafay.co
+        group:
+        - system:masters
+        username: kurt.madel@rafay.co
+      - arn: arn:aws:iam::679196758854:user/stuff@rafay.co
+        group:
+        - system:masters
+        username: stuff@rafay.co
+    managedNodeGroups:
+    - amiFamily: AmazonLinux2
+      availabilityZones:
+      - us-west-2a
+      - us-west-2b
+      desiredCapacity: 2
+      iam:
+        withAddonPolicies:
+          albIngress: true
+          autoScaler: true
+          externalDNS: true
+      instanceTypes:
+      - t3.xlarge
+      maxSize: 5
+      minSize: 1
+      name: default-node-group
+      preBootstrapCommands:
+      - sudo adduser -c "" -m ubuntu
+      - mkdir /home/ubuntu/.ssh
+      - chmod 700 /home/ubuntu/.ssh
+      - base64 -d <<< "c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCQVFEQ29lb0duUlhaMVlqSEtINU1IaEk3SjJpczJpOUk4MEJoNWFEeUo0Q1hUaStyTzRDdVIyZWxnbk9ML1BVRXpodFBuVW1nakFqc2JPWFFDWTJNYW9ZYXhMRXM2NmpXeUkyRk9GMytjV3Z4R01ob3hGMEhFeXJkM3orc2pVTXhmVnVwWm80c0ZZdzJ2dGtLQjJjMjVtaExQakRCcVNhb0Y3aWJrSTRQbW9CTVRiakQrN0NlVHhlM1Ftd2RqeUR4L2lZVEEyU2JzcFZhbXROUFlRZzV4dENKTmY1Qk1BQktSK1ZQNnhQUU1rYUpvNE8xakd0Z1Z0KzRtT2Vtem1ZUjZhTjJFUjgwa1VvdUFETThUb0NkcHhpNllLOUdKcDJaUGZSVGg0aFVVT2tTNTZiWko0TGF4SC9WcUZ0b0hybm5IUlZtVEg1anBBUHVZNU5jNEs4T1VYQVYK" > /home/ubuntu/.ssh/authorized_keys
+      - chmod 600 /home/ubuntu/.ssh/authorized_keys
+      - chown -R ubuntu:ubuntu /home/ubuntu/.ssh
+      volumeType: gp3
+    metadata:
+      name: api-team-eks-11-demo
+      region: us-west-2
+      tags:
+        email: kurt.madel@rafay.co
+        env: cs-demo
+        group: presales
+      version: "1.26"
+    network:
+      cni:
+        name: aws-cni
+    vpc:
+      cidr: 192.168.0.0/16
+      clusterEndpoints:
+        privateAccess: true
+        publicAccess: false
+      nat:
+        gateway: Single
