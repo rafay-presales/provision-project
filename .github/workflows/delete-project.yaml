@@ -56,6 +56,7 @@ jobs:
           # identity mapping is a yaml snippet representing a single entry
           BLUEPRINT_NAME=$(echo "$blueprint" | yq e '.blueprintname' -)
           echo "bllueprint name: $BLUEPRINT_NAME"
+          rctl share blueprint $BLUEPRINT_NAME -p $RCTL_PROJECT--none --v3
           rctl delete blueprint $BLUEPRINT_NAME --project $RCTL_PROJECT --wait
         done
     - name: delete-addons
@@ -67,6 +68,7 @@ jobs:
           # identity mapping is a yaml snippet representing a single entry
           ADDON_NAME=$(echo "$addon" | yq e '.metadata.name' -)
           echo "addon name: $ADDON_NAME"
+          rctl share addon $ADDON_NAME -p $RCTL_PROJECT--none --v3
           rctl delete addon $ADDON_NAME --project $RCTL_PROJECT --wait
         done
     - name: delete-namespaces
