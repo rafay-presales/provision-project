@@ -6,7 +6,7 @@ metadata:
   templateName: gke-cluster-template
 parameters:
   spec_blueprint_name:
-    default: gke-blueprint
+    default: gke-presales
     override:
       allow: false
       values: []
