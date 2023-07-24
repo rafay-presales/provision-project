@@ -16,7 +16,7 @@ parameters:
       allow: true
       values: []
   spec_config_controlPlaneVersion:
-    default: "1.25"
+    default: "1.26"
     override:
       allow: true
       values: []
@@ -83,7 +83,7 @@ parameters:
       allow: true
       values: []
   spec_config_nodePools_0_nodeVersion:
-    default: "1.24"
+    default: "1.26"
     override:
       allow: true
       values: []
