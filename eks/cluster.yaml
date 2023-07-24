@@ -47,7 +47,7 @@ spec:
       - sudo adduser -c "" -m ubuntu
       - mkdir /home/ubuntu/.ssh
       - chmod 700 /home/ubuntu/.ssh
-      - base64 -d <<< "c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCQVFEQ29lb0duUlhaMVlqSEtINU1IaEk3SjJpczJpOUk4MEJoNWFEeUo0Q1hUaStyTzRDdVIyZWxnbk9ML1BVRXpodFBuVW1nakFqc2JPWFFDWTJNYW9ZYXhMRXM2NmpXeUkyRk9GMytjV3Z4R01ob3hGMEhFeXJkM3orc2pVTXhmVnVwWm80c0ZZdzJ2dGtLQjJjMjVtaExQakRCcVNhb0Y3aWJrSTRQbW9CTVRiakQrN0NlVHhlM1Ftd2RqeUR4L2lZVEEyU2JzcFZhbXROUFlRZzV4dENKTmY1Qk1BQktSK1ZQNnhQUU1rYUpvNE8xakd0Z1Z0KzRtT2Vtem1ZUjZhTjJFUjgwa1VvdUFETThUb0NkcHhpNllLOUdKcDJaUGZSVGg0aFVVT2tTNTZiWko0TGF4SC9WcUZ0b0hybm5IUlZtVEg1anBBUHVZNU5jNEs4T1VYQVYK" > /home/ubuntu/.ssh/authorized_keys
+      - base64 -d <<< "REPLACE_SSH_PUBLIC_KEY" > /home/ubuntu/.ssh/authorized_keys
       - chmod 600 /home/ubuntu/.ssh/authorized_keys
       - chown -R ubuntu:ubuntu /home/ubuntu/.ssh
       volumeType: gp3
