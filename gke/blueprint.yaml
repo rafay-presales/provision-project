@@ -9,7 +9,7 @@ spec:
   version: v1
   type: custom
   customAddons:
-  - name: secrets-store-csi-driver-provider-gcp
+  - name: ingress-nginx
     version: v1
   defaultAddons:
     csiSecretStoreConfig:

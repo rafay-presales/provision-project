@@ -1,0 +1,20 @@
+apiVersion: apps.k8smgmt.io/v3
+kind: Override
+metadata:
+  labels:
+    rafay.dev/overrideScope: clusterLabels
+    rafay.dev/overrideType: valuesFile
+  name: ingress-nginx-lb-ip
+  project: api-team
+spec:
+  placement:
+    labels:
+    - key: rafay.dev/clusterName
+      value: REPLACE_CLUSTER_NAME
+  resource:
+    selector:
+      name: ingress-nginx
+    type: Addon
+  type: Helm
+  valuesPath:
+    name: file://ingress-nginx/values.yaml
