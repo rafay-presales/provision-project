@@ -33,6 +33,7 @@ on:
 env:
   PROJECT: ${{ github.event.inputs.project || 'api-team' }}
   CLUSTER_TYPE: ${{ github.event.inputs.type || 'eks' }}
+  SYSTEM_SYNC: ${{ github.event.inputs.system-sync || false }}
   RECREATE_SYNC_REPO: ${{ github.event.inputs.recreate-sync-repo || true }}
   CLUSTER_NAME: ${{ github.event.inputs.project || 'api-team' }}-${{ github.event.inputs.type || 'eks' }}-${{ github.run_number }}-demo
   RAFAY_ENVIRONMENT: ${{ github.event.inputs.rafay-environment || 'prod' }}
@@ -47,7 +48,7 @@ jobs:
       CLUSTER_NAME: ${{ env.CLUSTER_NAME }}
       RAFAY_ENVIRONMENT: ${{ env.RAFAY_ENVIRONMENT }}
     steps:
-      - run: echo "null"
+      - run: echo "init-env"
       
   create-project:
     needs: [init-env]
@@ -132,7 +133,7 @@ jobs:
       rafay-environment: ${{ needs.init-env.outputs.RAFAY_ENVIRONMENT }}
       
   system-sync-setup:
-    if: ${{ github.event.inputs.system-sync }}
+    if: ${{ github.env.SYSTEM_SYNC }}
     needs: [init-env,create-cluster]
     uses: rafay-presales/provision-project-demo/.github/workflows/system-sync-setup.yaml@main
     secrets: inherit
