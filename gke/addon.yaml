@@ -1,15 +1,15 @@
 apiVersion: infra.k8smgmt.io/v3
 kind: Addon
 metadata:
-  name: secrets-store-csi-driver-provider-gcp
+  name: ingress-nginx
+  project: api-team
 spec:
   artifact:
     artifact:
-      paths:
-      - name: deploy/provider-gcp-plugin.yaml
-      repository: secrets-store-csi-driver-provider-gcp
-      revision: main
-    type: Yaml
-  namespace: secrets-store-csi-gcp
+      catalog: default-helm
+      chartName: ingress-nginx
+      chartVersion: 4.7.0
+    type: Helm
+  namespace: ingress-nginx
   sharing: {}
   version: v1
