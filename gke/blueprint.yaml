@@ -15,7 +15,7 @@ spec:
     csiSecretStoreConfig:
       providers: {}
     enableCsiSecretStore: true
-    enableIngress: true
+    enableIngress: false
     enableLogging: true
     enableMonitoring: true
     monitoring:
