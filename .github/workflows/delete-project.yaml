@@ -71,6 +71,18 @@ jobs:
           rctl share addon $ADDON_NAME -p $RCTL_PROJECT --none --v3
           rctl delete addon $ADDON_NAME --project $RCTL_PROJECT --wait
         done
+    - name: delete-workloads
+      shell: bash
+      run: |
+        rctl get workloads -p $RCTL_PROJECT -o yaml --v3 > workloads.yaml
+        readarray workloads < <(yq e -o=j -I=0 '.items.[]' workloads.yaml )
+        for workload in "${workloads[@]}"; do
+          # identity mapping is a yaml snippet representing a single entry
+          WORKLOAD_NAME=$(echo "$workload" | yq e '.metadata.name' -)
+          echo "addon name: $WORKLOAD_NAME"
+          rctl share workload $WORKLOAD_NAME -p $RCTL_PROJECT --none --v3
+          rctl delete workload $WORKLOAD_NAME --project $RCTL_PROJECT --wait
+        done
     - name: delete-namespaces
       shell: bash
       run: |
