@@ -54,7 +54,6 @@ jobs:
         rctl apply -f $CLUSTER_TYPE/addon.yaml
       shell: bash
     - name: create-cluster-override
-      if: ${{ inputs.type == 'eks' }}
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" $CLUSTER_TYPE/cluster-override.yaml
         sed -i "s/REPLACE_CLUSTER_NAME/$CLUSTER_NAME/g" $CLUSTER_TYPE/cluster-override.yaml
