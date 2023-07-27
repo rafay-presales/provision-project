@@ -17,8 +17,8 @@ on:
         type: choice
         description: Type of cluster to provision
         options: 
-        - eks
         - gke
+        - eks
       project:
         description: 'project to delete - WARNING: Everything in the project will be deleted.'
         default: "api-team"
