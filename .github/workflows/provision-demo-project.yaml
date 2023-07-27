@@ -10,8 +10,8 @@ on:
         type: choice
         description: Type of cluster to provision
         options: 
-        - eks
         - gke
+        - eks
       project:
         description: 'Name of Rafay project to create'
         default: "api-team"
