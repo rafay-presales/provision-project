@@ -1,0 +1,86 @@
+name: create argocd workload
+on:
+  workflow_call:
+    inputs:
+      project:
+        required: true
+        type: string
+      type:
+        required: true
+        type: string
+      rafay-environment:
+        required: true
+        type: string
+      recreate-sync-repo:
+        type: boolean
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'project'
+        default: "api-team"
+      type:
+        type: choice
+        description: Type of cluster to provision
+        options: 
+        - gke
+        - eks
+      rafay-environment:
+        type: choice
+        description: Rafay console environment
+        options: 
+        - prod
+        - preview
+jobs:
+  create-argocd-workload:
+    environment:
+      name: ${{ inputs.rafay-environment }}
+    runs-on: ubuntu-latest
+    env:
+      RCTL_REST_ENDPOINT: ${{ secrets.RCTL_REST_ENDPOINT }}
+      RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
+      RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
+      RCTL_PROJECT: ${{ inputs.project }}
+      CLUSTER_TYPE: ${{ inputs.type }}
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+    - name: Setup rctl
+      uses: rafay-presales/rctl-setup@main
+    - name: Generate a GitHub App token
+      id: generate_token
+      uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92
+      with:
+        app_id: ${{ secrets.PRESALES_GITHUB_APP_ID }}
+        private_key: ${{ secrets.PRESALES_GITHUB_APP_KEY }}
+    - name: create-argocd-namespace
+      shell: bash
+      run: |
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" argocd/namespace.yaml
+        sed -i "s/REPLACE_CLUSTER_NAME/$CLUSTER_NAME/g" argocd/namespace.yaml
+        rctl apply -f argocd/namespace.yaml --wait
+    - name: create-demo-apps-repo
+      shell: bash
+      run: |
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" argocd/repository.yaml
+        rctl apply -f argocd/repository.yaml --wait
+    - name: create-argocd-workloadtemplate
+      shell: bash
+      run: |
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" argocd/workload-template.yaml
+        yq e -i ".metadata.name = \"$CLUSTER_TYPE-argocd\"" argocd/workload-template.yaml
+        rctl apply -f argocd/workload-template.yaml --wait
+    - name: create-argocd-pipeline
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+      run: |
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" argocd/pipeline.yaml
+        yq e -i ".metadata.name = \"$CLUSTER_TYPE-deploy-argocd\"" argocd/pipeline.yaml
+        sed -i "s/REPLACE_CLUSTER_NAME/$CLUSTER_NAME/g" argocd/pipeline.yaml
+        yq e -i ".spec.stages[0].config.name = \"$CLUSTER_TYPE-argocd\"" argocd/pipeline.yaml
+        yq e -i ".spec.triggers[0].config.name = \"$CLUSTER_TYPE-deploy-argocd-trigger\"" argocd/pipeline.yaml
+        rctl apply -f argocd/pipeline.yaml --wait
+        rctl get trigger -p $RCTL_PROJECT $CLUSTER_TYPE-deploy-argocd-trigger -o yaml --v3 > trigger.yaml
+        WEBHOOK_URL=$(yq '.triggerstatus.extra.webhook.webhookurl' trigger.yaml)
+        WEBHOOK_SECRET=$(yq '.triggerstatus.extra.webhook.webhooksecret' trigger.yaml)
+        echo '{"name":"web","active":true,"events":["push","pull_request","release"],"config":{"url":"'"$WEBHOOK_URL"'","secret":"'"$WEBHOOK_SECRET"'","content_type":"form","insecure_ssl":"0"}}' | gh api repos/rafay-presales/demo-apps/hooks --input - -X POST

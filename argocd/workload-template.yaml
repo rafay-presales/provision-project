@@ -1,0 +1,15 @@
+apiVersion: apps.k8smgmt.io/v3
+kind: WorkloadTemplate
+metadata:
+  name: argocd
+  project: api-team
+spec:
+  artifact:
+    artifact:
+      catalog: default-helm
+      chartName: argo-cd
+      chartVersion: 5.36.2
+    options:
+      maxHistory: 10
+      timeout: 5m0s
+    type: Helm

@@ -1,0 +1,35 @@
+apiVersion: gitops.k8smgmt.io/v3
+kind: Pipeline
+metadata:
+  name: deploy-argocd
+  project: api-team
+spec:
+  active: true
+  stages:
+  - config:
+      namespace: argocd
+      overrides:
+      - template:
+          paths:
+          - name: argo-cd/values.yaml
+          repository: demo-apps
+          revision: main
+        type: HelmValues
+      placement:
+        labels:
+        - key: rafay.dev/clusterName
+          value: REPLACE_CLUSTER_NAME
+      useRevisionFromWebhookTriggerEvent: true
+      workloadTemplate: argocd
+    name: deploy-argocd-workload-template
+    type: DeployWorkloadTemplate
+  triggers:
+  - config:
+      repo:
+        paths:
+        - name: argo-cd/values.yaml
+        provider: Github
+        repository: demo-apps
+        revision: main
+    name: deploy-argocd-trigger
+    type: Webhook

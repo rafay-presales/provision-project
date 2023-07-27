@@ -1,0 +1,13 @@
+apiVersion: integrations.k8smgmt.io/v3
+kind: Repository
+metadata:
+  annotations:
+    rafay.dev/description: Example apps to deploy as Rafay workloads.
+  description: Example apps to deploy as Rafay workloads.
+  name: demo-apps
+  project: api-team
+spec:
+  agents:
+  - {}
+  endpoint: https://github.com/rafay-presales/demo-apps.git
+  type: Git

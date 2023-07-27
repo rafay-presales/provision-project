@@ -1,0 +1,15 @@
+apiVersion: infra.k8smgmt.io/v3
+kind: Namespace
+metadata:
+  name: argocd
+  project: api-team
+spec:
+  limitRange:
+    container: {}
+    pod: {}
+  namespaceMeshPolicyParams: {}
+  placement:
+    labels:
+    - key: rafay.dev/clusterName
+      value: REPLACE_CLUSTER_NAME
+  resourceQuotas: {}
