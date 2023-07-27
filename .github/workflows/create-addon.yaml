@@ -58,7 +58,7 @@ jobs:
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" $CLUSTER_TYPE/cluster-override.yaml
         sed -i "s/REPLACE_CLUSTER_NAME/$CLUSTER_NAME/g" $CLUSTER_TYPE/cluster-override.yaml
         more $CLUSTER_TYPE/cluster-override.yaml
-        rctl apply -f $CLUSTER_TYPE/cluster-override.yaml
+        rctl create co -f $CLUSTER_TYPE/cluster-override.yaml -p $RCTL_PROJECT
       shell: bash
 
 

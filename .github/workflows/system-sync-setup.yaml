@@ -23,8 +23,8 @@ on:
         type: choice
         description: Type of cluster to provision
         options: 
-        - eks
         - gke
+        - eks
       project:
         description: 'project'
         default: "api-team"
@@ -45,7 +45,7 @@ on:
 
 env:
   PROJECT: ${{ inputs.project || 'api-team' }}
-  CLUSTER_TYPE: ${{ inputs.type || 'eks' }}
+  CLUSTER_TYPE: ${{ inputs.type || 'gke' }}
   CLUSTER_NAME: ${{ inputs.cluster-name }}
   RECREATE_SYNC_REPO: ${{ inputs.recreate-sync-repo || true }}
   RAFAY_ENVIRONMENT: ${{ inputs.rafay-environment || 'prod' }}

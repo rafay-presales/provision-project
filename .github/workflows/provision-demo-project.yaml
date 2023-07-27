@@ -1,6 +1,13 @@
 name: provision demo project
 
 on:
+  pull_request:
+    types:
+      - opened
+    branches:
+      - 'main'
+    paths:
+      - '**.yaml'
   schedule:
     # Runs "Mon-Fri at 07:10 EDT"
     - cron: '10 11 * * 1-5' 
