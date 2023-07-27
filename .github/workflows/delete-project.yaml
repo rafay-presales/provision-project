@@ -79,7 +79,7 @@ jobs:
         for workload in "${workloads[@]}"; do
           # identity mapping is a yaml snippet representing a single entry
           WORKLOAD_NAME=$(echo "$workload" | yq e '.metadata.name' -)
-          echo "addon name: $WORKLOAD_NAME"
+          echo "workload name: $WORKLOAD_NAME"
           rctl delete workload $WORKLOAD_NAME --project $RCTL_PROJECT --wait
         done
     - name: delete-namespaces
