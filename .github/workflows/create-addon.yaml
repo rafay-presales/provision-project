@@ -23,8 +23,8 @@ on:
         type: choice
         description: Type of cluster to provision
         options: 
-        - eks
         - gke
+        - eks
       rafay-environment:
         type: choice
         description: Rafay console environment
