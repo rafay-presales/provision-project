@@ -51,7 +51,7 @@ jobs:
     - name: create-addon
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" $CLUSTER_TYPE/addon.yaml
-        rctl apply -f $CLUSTER_TYPE/addon.yaml
+        rctl apply -f $CLUSTER_TYPE/addon.yaml --wait
       shell: bash
     - name: create-cluster-override
       run: |
