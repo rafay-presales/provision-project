@@ -77,8 +77,9 @@ jobs:
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" argocd/pipeline.yaml
         yq e -i ".metadata.name = \"$CLUSTER_TYPE-deploy-argocd\"" argocd/pipeline.yaml
         sed -i "s/REPLACE_CLUSTER_NAME/$CLUSTER_NAME/g" argocd/pipeline.yaml
-        yq e -i ".spec.stages[0].config.name = \"$CLUSTER_TYPE-argocd\"" argocd/pipeline.yaml
-        yq e -i ".spec.triggers[0].config.name = \"$CLUSTER_TYPE-deploy-argocd-trigger\"" argocd/pipeline.yaml
+        yq e -i ".spec.stages[0].name = \"$CLUSTER_TYPE-argocd\"" argocd/pipeline.yaml
+        yq e -i ".spec.stages[0].config.workloadTemplate = \"$CLUSTER_TYPE-argocd\"" argocd/pipeline.yaml
+        yq e -i ".spec.triggers[0].name = \"$CLUSTER_TYPE-deploy-argocd-trigger\"" argocd/pipeline.yaml
         rctl apply -f argocd/pipeline.yaml --wait
         rctl get trigger -p $RCTL_PROJECT $CLUSTER_TYPE-deploy-argocd-trigger -o yaml --v3 > trigger.yaml
         WEBHOOK_URL=$(yq '.triggerstatus.extra.webhook.webhookurl' trigger.yaml)
