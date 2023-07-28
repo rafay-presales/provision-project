@@ -80,7 +80,7 @@ jobs:
           # identity mapping is a yaml snippet representing a single entry
           WORKLOAD_NAME=$(echo "$workload" | yq e '.metadata.name' -)
           echo "workload name: $WORKLOAD_NAME"
-          rctl delete workload $WORKLOAD_NAME --project $RCTL_PROJECT --wait
+          rctl delete workload $WORKLOAD_NAME --project $RCTL_PROJECT --v3 --wait
         done
     - name: delete-namespaces
       shell: bash
