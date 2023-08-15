@@ -5,7 +5,7 @@ metadata:
 spec:
   base:
     name: minimal
-    version: 1.26.0
+    version: 1.27.0
   version: v1
   type: custom
   customAddons:
@@ -17,10 +17,6 @@ spec:
     enableCsiSecretStore: true
     enableIngress: false
     enableLogging: true
-    enableMonitoring: true
-    monitoring:
-      metricsServer:
-        enabled: true
   drift:
     enabled: true
     action: Notify
