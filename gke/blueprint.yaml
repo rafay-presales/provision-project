@@ -4,7 +4,7 @@ metadata:
   name: gke-presales
 spec:
   base:
-    name: default-gke
+    name: minimal
     version: 1.26.0
   version: v1
   type: custom

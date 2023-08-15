@@ -1,0 +1,17 @@
+apiVersion: opa.k8smgmt.io/v3
+kind: OPAConstraint
+metadata:
+  labels:
+    rafay.dev/opa: constraint
+  name: presales-allowed-repos
+  project: api-team
+spec:
+  artifact:
+    artifact:
+      paths:
+      - name: file://artifacts/presales-allowed-repos.yaml
+    options: {}
+    type: Yaml
+  published: true 
+  templateName: presales-allowed-repos
+  version: v1

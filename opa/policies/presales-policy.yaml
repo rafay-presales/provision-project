@@ -1,0 +1,12 @@
+apiVersion: opa.k8smgmt.io/v3
+kind: OPAPolicy
+metadata:
+  name: presales-reliability
+  project: api-team
+spec:
+  constraintList:
+  - name: presales-allowed-repos
+    version: v1
+  sharing:
+    enabled: false
+  version: v1
