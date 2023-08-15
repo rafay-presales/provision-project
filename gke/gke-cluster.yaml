@@ -1,0 +1,49 @@
+apiVersion: infra.k8smgmt.io/v3
+kind: Cluster
+metadata:
+  labels:
+    rafay.dev/projectID: ky4x1dk
+    rafay.dev/projectName: api-team
+  name: api-team-gke-41-demo
+  project: api-team
+spec:
+  blueprint:
+    name: gke-presales
+    version: v1
+  cloudCredentials: gcp-demo-credentials
+  config:
+    controlPlaneVersion: "1.26"
+    features:
+      cloudLoggingComponents:
+      - WORKLOADS
+      - SYSTEM_COMPONENTS
+      enableCloudLogging: true
+      enableComputeEnginePersistentDiskCSIDriver: true
+    gcpProject: demos-249423
+    location:
+      config:
+        zone: us-central1-b
+      type: zonal
+    network:
+      access:
+        config: null
+        type: public
+      enableVPCNativetraffic: true
+      maxPodsPerNode: 110
+      name: default
+      subnetName: default
+    nodePools:
+    - autoScaling:
+        maxNodes: 5
+        minNodes: 1
+      machineConfig:
+        bootDiskSize: 50
+        bootDiskType: pd-standard
+        imageType: COS_CONTAINERD
+        machineType: e2-standard-4
+      name: amd-nodepool
+      nodeVersion: "1.26"
+      size: 1
+    security:
+      enableWorkloadIdentity: true
+  type: gke
