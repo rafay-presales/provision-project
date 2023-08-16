@@ -58,7 +58,7 @@ spec:
         email: kurt.madel@rafay.co
         env: cs-demo
         group: presales
-      version: "1.26"
+      version: "1.25"
     network:
       cni:
         name: aws-cni

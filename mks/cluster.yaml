@@ -1,0 +1,39 @@
+kind: Cluster
+apiVersion: infra.k8smgmt.io/v3
+metadata:
+  name: edge-cluster-demo
+  project: api-team
+  labels:
+    env: cs-demo
+spec:
+  blueprint:
+    name: default-upstream
+  config:
+    autoApproveNodes: true
+    kubernetesVersion: v1.25.8
+    location: gcp/us-central1
+    network:
+      cni:
+        name: Calico
+        version: 3.24.5
+      ipv6:
+        podSubnet: 2001:db8:42:0::/56
+        serviceSubnet: 2001:db8:42:1::/112
+      podSubnet: 10.244.0.0/16
+      serviceSubnet: 10.96.0.0/12
+    nodes:
+    - arch: amd64
+      hostname: presales-edge-demo-vm
+      operatingSystem: Ubuntu20.04
+      privateip: 10.128.0.3
+      roles:
+      - Master
+      - Storage
+      - Worker
+      ssh:
+        ipAddress: 104.197.171.159
+        port: "22"
+        privateKeyPath: mks.pem
+        username: ubuntu
+    proxy: {}
+  type: mks
