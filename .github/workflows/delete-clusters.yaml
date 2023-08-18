@@ -62,5 +62,6 @@ jobs:
         RCTL_PROJECT: ${{ inputs.project }}
       run: |
         echo ${{ matrix.cluster }}  
+        rctl share cluster ${{ matrix.cluster }} --none --project $RCTL_PROJECT --wait
         rctl delete cluster ${{ matrix.cluster }} -y --project $RCTL_PROJECT --wait
       shell: bash

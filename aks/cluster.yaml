@@ -1,0 +1,55 @@
+apiVersion: infra.k8smgmt.io/v3
+kind: Cluster
+metadata:
+  name: api-team-aks-demo
+  project: api-team
+spec:
+  blueprintConfig:
+    name: default-aks
+  cloudCredentials: azure-cloud-credentail
+  config:
+    kind: aksClusterConfig
+    metadata:
+      name: api-team-aks-demo
+    spec:
+      managedCluster:
+        apiVersion: "2022-07-01"
+        identity:
+          type: SystemAssigned
+        location: westus2
+        properties:
+          apiServerAccessProfile:
+            enablePrivateCluster: true
+          dnsPrefix: api-team-aks-demo-dns
+          kubernetesVersion: 1.26.3
+          networkProfile:
+            loadBalancerSku: standard
+            networkPlugin: kubenet
+        sku:
+          name: Basic
+          tier: Free
+        tags:
+          email: kurt.madel@rafay.co
+          env: cs-demo
+          group: presales
+        type: Microsoft.ContainerService/managedClusters
+      nodePools:
+      - apiVersion: "2022-07-01"
+        location: westus2
+        name: primary
+        properties:
+          count: 1
+          enableAutoScaling: true
+          maxCount: 1
+          maxPods: 110
+          minCount: 1
+          mode: System
+          orchestratorVersion: 1.26.3
+          osType: Linux
+          type: VirtualMachineScaleSets
+          vmSize: Standard_DS2_v2
+        type: Microsoft.ContainerService/managedClusters/agentPools
+      resourceGroupName: presales
+  proxyConfig: {}
+  systemComponentsPlacement: {}
+  type: aks
