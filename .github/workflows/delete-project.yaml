@@ -71,6 +71,18 @@ jobs:
           rctl share addon $ADDON_NAME -p $RCTL_PROJECT --none --v3
           rctl delete addon $ADDON_NAME --project $RCTL_PROJECT --wait
         done
+    - name: delete-pipelines
+      shell: bash
+      run: |
+        rctl get pipelines -p $RCTL_PROJECT -o yaml --v3 > pipelines.yaml
+        readarray pipelines < <(yq e -o=j -I=0 '.items.[]' pipelines.yaml )
+        for pipeline in "${pipelines[@]}"; do
+          # identity mapping is a yaml snippet representing a single entry
+          PIPELINE_NAME=$(echo "$pipeline" | yq e '.metadata.name' -)
+          echo "pipeline name: $PIPELINE_NAME"
+          rctl share pipeline $PIPELINE_NAME -p $RCTL_PROJECT --none --v3
+          rctl delete pipeline $PIPELINE_NAME --project $RCTL_PROJECT --v3 --wait
+        done
     - name: delete-workloads
       shell: bash
       run: |

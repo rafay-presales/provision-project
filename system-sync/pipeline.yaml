@@ -17,6 +17,8 @@ spec:
       - name: SecretSealer
       - name: Namespace
       - name: Agent
+      - name: Override
+      - name: Workload
       sourceAsDestination: true
       sourceRepo:
         repository: REPLACE
