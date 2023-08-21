@@ -1,0 +1,41 @@
+apiVersion: gitops.k8smgmt.io/v3
+kind: Pipeline
+metadata:
+  name: gke-system-sync
+  project: api-team
+spec:
+  active: true
+  sharing:
+    enabled: true
+    projects:
+    - name: dev-sandbox
+  stages:
+  - config:
+      destinationRepo: {}
+      gitToSystemSync: true
+      includedResources:
+      - name: Cluster
+      - name: Blueprint
+      - name: Addon
+      - name: Repository
+      - name: Pipeline
+      - name: SecretSealer
+      - name: Namespace
+      - name: Agent
+      - name: Override
+      - name: Workload
+      sourceAsDestination: true
+      sourceRepo:
+        repository: gke-system-sync
+        revision: main
+      systemToGitSync: true
+    name: system-sync-stage
+    type: SystemSync
+  triggers:
+  - config:
+      repo:
+        provider: Github
+        repository: gke-system-sync
+        revision: main
+    name: system-sync-webhook
+    type: Webhook
