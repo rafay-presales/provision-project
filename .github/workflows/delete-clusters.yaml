@@ -45,7 +45,7 @@ jobs:
         echo "CLUSTERS=$CLUSTER_MATRIX" >> $GITHUB_OUTPUT
   delete-clusters:
     needs: cluster-matrix
-    if: needs.cluster-matrix.outputs.clusters != '[]'
+    if: fromJson(needs.cluster-matrix.outputs.clusters)[0] != null
     environment:
       name: ${{ inputs.rafay-environment }}
     runs-on: ubuntu-latest
