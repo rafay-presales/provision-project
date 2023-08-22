@@ -1,0 +1,20 @@
+apiVersion: apps.k8smgmt.io/v3
+kind: Workload
+metadata:
+  name: echo-app
+  project: dev-sandbox
+spec:
+  artifact:
+    artifact:
+      paths:
+      - name: echo/echo.yaml
+      repository: demo-apps
+      revision: main
+    type: Yaml
+  drift:
+    action: Notify
+    enabled: true
+  namespace: dev-sandbox-ns
+  placement:
+    selector: rafay.dev/clusterName=api-team-gke-49-demo
+  version: echo-app-v14-202308211833060000
