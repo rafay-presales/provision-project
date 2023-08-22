@@ -8,8 +8,8 @@ spec:
     container: {}
     pod:
       max:
-        cpu: 1m
-        memory: 2Mi
+        cpu: 1000m
+        memory: 2000Mi
   namespaceMeshPolicyParams: {}
   placement:
     labels:
