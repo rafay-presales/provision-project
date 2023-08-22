@@ -80,7 +80,6 @@ jobs:
           # identity mapping is a yaml snippet representing a single entry
           PIPELINE_NAME=$(echo "$pipeline" | yq e '.metadata.name' -)
           echo "pipeline name: $PIPELINE_NAME"
-          rctl share pipeline $PIPELINE_NAME -p $RCTL_PROJECT --none --v3
           rctl delete pipeline $PIPELINE_NAME --project $RCTL_PROJECT --v3 --wait
         done
     - name: delete-workloads
