@@ -81,7 +81,7 @@ jobs:
           PIPELINE_NAME=$(echo "$pipeline" | yq e '.metadata.name' -)
           echo "pipeline name: $PIPELINE_NAME"
           rctl get pipeline $PIPELINE_NAME --project $RCTL_PROJECT -o yaml --v3 > $PIPELINE_NAME.yaml
-          yq e -i ".spec.sharing.enabled = 'false'" $PIPELINE_NAME.yaml
+          yq e -i ".spec.sharing.enabled=false" $PIPELINE_NAME.yaml
           rctl apply -f $PIPELINE_NAME.yaml --project $RCTL_PROJECT
           rctl delete pipeline $PIPELINE_NAME --project $RCTL_PROJECT --v3 --wait
         done
