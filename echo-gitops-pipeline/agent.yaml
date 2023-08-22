@@ -1,0 +1,10 @@
+apiVersion: gitops.k8smgmt.io/v3
+kind: Agent
+metadata:
+  name: REPLACE
+spec:
+  active: true
+  cluster:
+    name: REPLACE
+  sharing: {}
+  type: Cluster

@@ -1,0 +1,23 @@
+apiVersion: gitops.k8smgmt.io/v3
+kind: Pipeline
+metadata:
+  name: echo-app-pipeline
+  project: dev-sandbox
+spec:
+  active: true
+  stages:
+  - config:
+      useRevisionFromWebhookTriggerEvent: true
+      workload: echo-app
+    name: deploy-echo-app
+    type: DeployWorkload
+  triggers:
+  - config:
+      repo:
+        paths:
+        - name: echo/echo.yaml
+        provider: Github
+        repository: demo-apps
+        revision: main
+    name: echo-app-webhook
+    type: Webhook

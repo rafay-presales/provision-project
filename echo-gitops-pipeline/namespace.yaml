@@ -1,8 +1,8 @@
 apiVersion: infra.k8smgmt.io/v3
 kind: Namespace
 metadata:
-  name: dev-sandbox-ns
-  project: dev-sandbox
+  name: echo-team-ns
+  project: REPLACE_PROJECT
 spec:
   limitRange:
     container: {}
@@ -14,7 +14,7 @@ spec:
   placement:
     labels:
     - key: rafay.dev/clusterName
-      value: api-team-gke-49-demo
+      value: REPLACE_CLUSTER_NAME
   resourceQuotas:
     cpuLimits: 4000m
     memoryLimits: 8000Mi

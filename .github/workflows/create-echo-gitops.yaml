@@ -1,0 +1,121 @@
+name: create-echo-gitops
+
+on:
+  workflow_call:
+    inputs:
+      project:
+        required: true
+        type: string
+      type:
+        required: true
+        type: string
+      rafay-environment:
+        required: true
+        type: string
+      cluster-name:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      type:
+        type: choice
+        description: Type of cluster to target
+        options: 
+        - gke
+        - eks
+      project:
+        description: 'project'
+        default: "echo-team"
+      rafay-environment:
+        type: choice
+        description: Rafay console environment
+        options: 
+        - prod
+        - preview
+      cluster-name:
+        required: true
+        description: Cluster name to deploy system sync agent
+        type: string
+env:
+  PROJECT: ${{ inputs.project || 'api-team' }}
+  CLUSTER_TYPE: ${{ inputs.type || 'gke' }}
+  CLUSTER_NAME: ${{ inputs.cluster-name }}
+  RAFAY_ENVIRONMENT: ${{ inputs.rafay-environment || 'prod' }}
+
+jobs:
+  create-echo-gitops:
+    environment:
+      name: ${{ inputs.rafay-environment }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: echo-gitops-pipeline
+    env:
+      RCTL_REST_ENDPOINT: ${{ secrets.RCTL_REST_ENDPOINT }}
+      RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
+      RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
+      RCTL_PROJECT: ${{ inputs.project }}
+      CLUSTER_TYPE: ${{ inputs.type }}
+      CLUSTER_NAME: ${{ inputs.cluster-name }}
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+    - name: cluster-name-from-input
+      if: ${{ inputs.cluster-name }}
+      env:
+        CLUSTER_NAME: ${{ inputs.cluster-name }}
+      run: echo "CLUSTER_NAME=$CLUSTER_NAME" >> $GITHUB_ENV
+    - name: Setup rctl
+      uses: rafay-presales/rctl-setup@main
+    - name: create-project
+      shell: bash
+      run: |
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" project.yaml
+        rctl apply -f project.yaml
+    - name: share-cluster
+      shell: bash
+      run: | 
+        rctl share cluster $CLUSTER_NAME --projects $RCTL_PROJECT --project api-team --wait
+    - name: create-agent
+      shell: bash
+      run: |
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" agent.yaml
+        yq e -i ".metadata.name = \"$CLUSTER_TYPE-gitops-agent\"" agent.yaml
+        yq e -i ".spec.cluster.name = \"$CLUSTER_NAME\"" agent.yaml
+        rctl apply -f agent.yaml
+    - name: create-namespace
+      shell: bash
+      run: |
+        sed -i "s/REPLACE_CLUSTER_NAME/$CLUSTER_NAME/g" namespace.yaml
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" namespace.yaml
+        rctl apply -f namespace.yaml
+    - name: create-repository
+      shell: bash
+      run: |
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" repository.yaml
+        rctl apply -f repository.yaml
+    - name: create-workload
+      shell: bash
+      run: |
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" workload.yaml
+        yq e -i ".spec.placement.selector = \"rafay.dev/clusterName=$CLUSTER_NAME\"" workload.yaml
+        rctl apply -f workload.yaml --wait
+    - name: Generate a GitHub App token
+      id: generate_token
+      uses: tibdex/github-app-token@v1.8.0
+      with:
+        app_id: ${{ secrets.PRESALES_GITHUB_APP_ID }}
+        private_key: ${{ secrets.PRESALES_GITHUB_APP_KEY }}
+    - name: create-pipeline
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+      run: |
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" pipeline.yaml
+        rctl apply -f pipeline.yaml --wait
+        rctl get trigger -p $RCTL_PROJECT echo-app-webhook -o yaml --v3 > trigger.yaml
+        WEBHOOK_URL=$(yq '.triggerstatus.extra.webhook.webhookurl' trigger.yaml)
+        WEBHOOK_SECRET=$(yq '.triggerstatus.extra.webhook.webhooksecret' trigger.yaml)
+        echo '{"name":"web","active":true,"events":["push","pull_request","release"],"config":{"url":"'"$WEBHOOK_URL"'","secret":"'"$WEBHOOK_SECRET"'","content_type":"form","insecure_ssl":"0"}}' \
+          | gh api repos/rafay-presales/demo-apps/hooks --input - -X POST
+
