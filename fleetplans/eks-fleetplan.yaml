@@ -1,0 +1,80 @@
+apiVersion: infra.k8smgmt.io/v3
+kind: FleetPlan
+metadata:
+  name: fleet-eks-upgrade-k8s-version
+  project: api-team
+spec:
+  agents:
+  - name: preview-platform-gitops-agent
+  fleet:
+    kind: clusters
+    labels:
+      cluster-type: eks
+      env: eks-demo
+    projects:
+    - name: demofleet
+    - name: platform
+  operationWorkflow:
+    operations:
+    - action:
+        controlPlaneUpgradeConfig:
+          version: "1.24"
+        description: upgrade-control-plane
+        name: upgrade-control-plane
+        type: controlPlaneUpgrade
+      name: upgrade-control-plane
+      posthooks:
+      - containerConfig:
+          arguments:
+          - --k8s-version=v1.25.5
+          image: ctadeu/kubepug:latest
+          runner: agent
+        description: re-run check depreciated apis
+        inject:
+        - KUBECONFIG
+        name: upgrade-posthook
+      prehooks:
+      - containerConfig:
+          arguments:
+          - --k8s-version=v1.24.9
+          image: ctadeu/kubepug:latest
+          runner: agent
+        description: check depreciated apis
+        inject:
+        - KUBECONFIG
+        name: upgrade-prehook
+    - action:
+        description: upgrade-linux-ng
+        name: upgrade-linux-ng
+        nodeGroupsUpgradeConfig:
+          names:
+          - managed-linux-ng
+          version: "1.24"
+        type: nodeGroupsUpgrade
+      name: upgrade-linux-ng
+      posthooks:
+      - containerConfig:
+          arguments:
+          - -c
+          - kubectl get nodes -o wide
+          commands:
+          - /bin/sh
+          image: alpine/k8s:1.24.16
+          runner: agent
+        description: recheck-get-all-nodes-linux
+        inject:
+        - KUBECONFIG
+        name: recheck-get-all-nodes-linux
+      prehooks:
+      - containerConfig:
+          arguments:
+          - -c
+          - kubectl get nodes -o wide
+          commands:
+          - /bin/sh
+          image: alpine/k8s:1.24.16
+          runner: agent
+        description: get-all-nodes-linux
+        inject:
+        - KUBECONFIG
+        name: get-all-nodes-linux

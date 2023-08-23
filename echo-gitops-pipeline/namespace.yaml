@@ -1,7 +1,7 @@
 apiVersion: infra.k8smgmt.io/v3
 kind: Namespace
 metadata:
-  name: echo-team-ns
+  name: echo-team-dev
   project: REPLACE_PROJECT
 spec:
   limitRange:
