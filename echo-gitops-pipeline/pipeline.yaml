@@ -2,7 +2,7 @@ apiVersion: gitops.k8smgmt.io/v3
 kind: Pipeline
 metadata:
   name: echo-app-pipeline
-  project: dev-sandbox
+  project: echo-team
 spec:
   active: true
   stages:
