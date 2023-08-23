@@ -11,9 +11,6 @@ spec:
       repository: demo-apps
       revision: main
     type: Yaml
-  drift:
-    action: Notify
-    enabled: true
   namespace: echo-team-ns
   placement:
     selector: rafay.dev/clusterName=api-team-gke-49-demo
