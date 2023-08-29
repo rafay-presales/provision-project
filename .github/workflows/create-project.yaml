@@ -35,6 +35,7 @@ jobs:
     - name: create-project
       env:
         RCTL_REST_ENDPOINT: ${{ secrets.RCTL_REST_ENDPOINT }}
+        RCTL_OPS_ENDPOINT: ${{ secrets.RCTL_OPS_ENDPOINT }}
         RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
         PROJECT: ${{ inputs.project }}

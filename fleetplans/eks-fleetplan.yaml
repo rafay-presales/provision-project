@@ -1,24 +1,22 @@
 apiVersion: infra.k8smgmt.io/v3
 kind: FleetPlan
 metadata:
-  name: fleet-eks-upgrade-k8s-version
+  name: eks-upgrade-k8s-plan
   project: api-team
 spec:
   agents:
-  - name: preview-platform-gitops-agent
+  - name: eks-system-sync
   fleet:
     kind: clusters
     labels:
-      cluster-type: eks
-      env: eks-demo
+      k8smgmt.io/fleet: eks-presales
     projects:
-    - name: demofleet
-    - name: platform
+    - name: api-team
   operationWorkflow:
     operations:
     - action:
         controlPlaneUpgradeConfig:
-          version: "1.24"
+          version: "1.26"
         description: upgrade-control-plane
         name: upgrade-control-plane
         type: controlPlaneUpgrade
@@ -26,7 +24,7 @@ spec:
       posthooks:
       - containerConfig:
           arguments:
-          - --k8s-version=v1.25.5
+          - --k8s-version=v1.26.8
           image: ctadeu/kubepug:latest
           runner: agent
         description: re-run check depreciated apis
@@ -36,7 +34,7 @@ spec:
       prehooks:
       - containerConfig:
           arguments:
-          - --k8s-version=v1.24.9
+          - --k8s-version=v1.26.8
           image: ctadeu/kubepug:latest
           runner: agent
         description: check depreciated apis
@@ -44,14 +42,14 @@ spec:
         - KUBECONFIG
         name: upgrade-prehook
     - action:
-        description: upgrade-linux-ng
-        name: upgrade-linux-ng
+        description: upgrade-default-ng
+        name: upgrade-default-ng
         nodeGroupsUpgradeConfig:
           names:
-          - managed-linux-ng
-          version: "1.24"
+          - default-node-group
+          version: "1.26"
         type: nodeGroupsUpgrade
-      name: upgrade-linux-ng
+      name: upgrade-default-ng
       posthooks:
       - containerConfig:
           arguments:
@@ -59,7 +57,7 @@ spec:
           - kubectl get nodes -o wide
           commands:
           - /bin/sh
-          image: alpine/k8s:1.24.16
+          image: alpine/k8s:1.26.5
           runner: agent
         description: recheck-get-all-nodes-linux
         inject:
@@ -72,7 +70,7 @@ spec:
           - kubectl get nodes -o wide
           commands:
           - /bin/sh
-          image: alpine/k8s:1.24.16
+          image: alpine/k8s:1.25.12
           runner: agent
         description: get-all-nodes-linux
         inject:

@@ -27,6 +27,7 @@ jobs:
       name: ${{ inputs.rafay-environment }}
     env:
       RCTL_REST_ENDPOINT: ${{ secrets.RCTL_REST_ENDPOINT }}
+      RCTL_OPS_ENDPOINT: ${{ secrets.RCTL_OPS_ENDPOINT }}
       RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
       RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
       RCTL_PROJECT: ${{ inputs.project }}
@@ -58,6 +59,7 @@ jobs:
     - name: delete-clusters
       env:
         RCTL_REST_ENDPOINT: ${{ secrets.RCTL_REST_ENDPOINT }}
+        RCTL_OPS_ENDPOINT: ${{ secrets.RCTL_OPS_ENDPOINT }}
         RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
         RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
         RCTL_PROJECT: ${{ inputs.project }}
