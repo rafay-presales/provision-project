@@ -73,6 +73,7 @@ jobs:
         private_key: ${{ secrets.PRESALES_GITHUB_APP_KEY }}
     - name: delete-github-repo
       shell: bash
+      continue-on-error: true
       env:
         GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
       run: |
