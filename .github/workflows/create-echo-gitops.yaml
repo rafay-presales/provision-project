@@ -24,8 +24,11 @@ on:
         - gke
         - eks
       project:
-        description: 'project'
+        description: 'new project'
         default: "echo-team"
+      share-project:
+        description: 'share project'
+        default: "shared-infra-team"
       rafay-environment:
         type: choice
         description: Rafay console environment
@@ -37,7 +40,8 @@ on:
         description: Cluster name to deploy system sync agent
         type: string
 env:
-  PROJECT: ${{ inputs.project || 'api-team' }}
+  PROJECT: ${{ inputs.project || 'echo-team' }}
+  SHARE_PROJECT: ${{ inputs.share-project || 'shared-infra-team' }}
   CLUSTER_TYPE: ${{ inputs.type || 'gke' }}
   CLUSTER_NAME: ${{ inputs.cluster-name }}
   RAFAY_ENVIRONMENT: ${{ inputs.rafay-environment || 'prod' }}
@@ -92,7 +96,7 @@ jobs:
     - name: share-cluster
       shell: bash
       run: | 
-        rctl share cluster $CLUSTER_NAME --projects $RCTL_PROJECT --project api-team --wait
+        rctl share cluster $CLUSTER_NAME --projects $RCTL_PROJECT --project $SHARE_PROJECT --wait
     - name: create-agent
       shell: bash
       run: |
