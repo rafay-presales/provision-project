@@ -153,6 +153,7 @@ jobs:
         yq e -i ".spec.stages[0].config.workload = \"$RCTL_PROJECT-workload\"" pipeline.yaml
         yq e -i ".spec.triggers[0].name = \"$RCTL_PROJECT-webhook\"" pipeline.yaml
         sed -i "s/REPLACE_REPO_NAME/$RCTL_PROJECT/g" pipeline.yaml
+        more pipeline.yaml
         rctl apply -f pipeline.yaml --wait
         rctl get trigger -p $RCTL_PROJECT $RCTL_PROJECT-webhook -o yaml --v3 > trigger.yaml
         WEBHOOK_URL=$(yq '.triggerstatus.extra.webhook.webhookurl' trigger.yaml)
