@@ -150,6 +150,7 @@ jobs:
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" pipeline.yaml
         yq e -i ".metadata.name = \"$RCTL_PROJECT-pipeline\"" pipeline.yaml
+        yq e -i ".spec.stages[0].config.workload = \"$RCTL_PROJECT-workload\"" pipeline.yaml
         yq e -i ".spec.triggers[0].name = \"$RCTL_PROJECT-webhook\"" pipeline.yaml
         yq e -i ".spec.triggers[0].repo.repository = \"$RCTL_PROJECT\"" pipeline.yaml
         rctl apply -f pipeline.yaml --wait
