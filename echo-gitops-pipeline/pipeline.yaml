@@ -17,7 +17,7 @@ spec:
         paths:
         - name: echo.yaml
         provider: Github
-        repository: demo-apps
+        repository: REPLACE_REPO_NAME
         revision: main
     name: echo-app-webhook
     type: Webhook
