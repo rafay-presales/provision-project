@@ -2,12 +2,11 @@ apiVersion: apps.k8smgmt.io/v3
 kind: Workload
 metadata:
   name: echo-app
-  project: dev-sandbox
 spec:
   artifact:
     artifact:
       paths:
-      - name: echo/echo.yaml
+      - name: echo.yaml
       repository: demo-apps
       revision: main
     type: Yaml

@@ -61,6 +61,22 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@v3
+    - name: Generate a GitHub App token
+      id: generate_token
+      uses: tibdex/github-app-token@v1.8.0
+      with:
+        app_id: ${{ secrets.PRESALES_GITHUB_APP_ID }}
+        private_key: ${{ secrets.PRESALES_GITHUB_APP_KEY }}
+    - name: delete-github-repo
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+      run: |
+        gh api \
+          --method DELETE \
+          -H "Accept: application/vnd.github+json" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          /repos/rafay-presales/$RCTL_PROJECT
     - name: cluster-name-from-input
       if: ${{ inputs.cluster-name }}
       env:
@@ -89,34 +105,52 @@ jobs:
       run: |
         sed -i "s/REPLACE_CLUSTER_NAME/$CLUSTER_NAME/g" namespace.yaml
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" namespace.yaml
+        yq e -i ".metadata.name = \"$RCTL_PROJECT\"" namespace.yaml
         rctl apply -f namespace.yaml
+    - name: create-github-repo
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+      run: |
+        gh api \
+          --method POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          /repos/rafay-presales/echo-demo-template/generate \
+          -f owner='rafay-presales' \
+        -f name="$RCTL_PROJECT" \
+        -f description='A simple echo demo app manifest.' \
+        -F include_all_branches=false \
+        -F private=false 
     - name: create-repository
       shell: bash
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" repository.yaml
+        yq e -i ".metadata.name = \"$RCTL_PROJECT\"" repository.yaml
+        yq e -i ".spec.endpoint = \"https://github.com/rafay-presales/$RCTL_PROJECT.git\"" repository.yaml
         rctl apply -f repository.yaml
     - name: create-workload
       shell: bash
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" workload.yaml
+        yq e -i ".metadata.name = \"$RCTL_PROJECT-workload\"" workload.yaml
+        yq e -i ".spec.artifact.artifact.repository = \"$RCTL_PROJECT\"" workload.yaml
+        yq e -i ".spec.namespace = \"$RCTL_PROJECT\"" workload.yaml
         yq e -i ".spec.placement.selector = \"rafay.dev/clusterName=$CLUSTER_NAME\"" workload.yaml
         rctl apply -f workload.yaml --wait
-    - name: Generate a GitHub App token
-      id: generate_token
-      uses: tibdex/github-app-token@v1.8.0
-      with:
-        app_id: ${{ secrets.PRESALES_GITHUB_APP_ID }}
-        private_key: ${{ secrets.PRESALES_GITHUB_APP_KEY }}
     - name: create-pipeline
       shell: bash
       env:
         GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" pipeline.yaml
+        yq e -i ".metadata.name = \"$RCTL_PROJECT-pipeline\"" pipeline.yaml
+        yq e -i ".spec.triggers[0].name = \"$RCTL_PROJECT-webhook\"" pipeline.yaml
+        yq e -i ".spec.triggers[0].repo.repository = \"$RCTL_PROJECT\"" pipeline.yaml
         rctl apply -f pipeline.yaml --wait
-        rctl get trigger -p $RCTL_PROJECT echo-app-webhook -o yaml --v3 > trigger.yaml
+        rctl get trigger -p $RCTL_PROJECT $RCTL_PROJECT-webhook -o yaml --v3 > trigger.yaml
         WEBHOOK_URL=$(yq '.triggerstatus.extra.webhook.webhookurl' trigger.yaml)
         WEBHOOK_SECRET=$(yq '.triggerstatus.extra.webhook.webhooksecret' trigger.yaml)
         echo '{"name":"web","active":true,"events":["push","pull_request","release"],"config":{"url":"'"$WEBHOOK_URL"'","secret":"'"$WEBHOOK_SECRET"'","content_type":"form","insecure_ssl":"0"}}' \
-          | gh api repos/rafay-presales/demo-apps/hooks --input - -X POST
+          | gh api repos/rafay-presales/$RCTL_PROJECT/hooks --input - -X POST
 

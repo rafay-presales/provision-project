@@ -2,7 +2,6 @@ apiVersion: integrations.k8smgmt.io/v3
 kind: Repository
 metadata:
   name: demo-apps
-  project: dev-sandbox
 spec:
   agents:
   - {}

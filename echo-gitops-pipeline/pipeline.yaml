@@ -15,7 +15,7 @@ spec:
   - config:
       repo:
         paths:
-        - name: echo/echo.yaml
+        - name: echo.yaml
         provider: Github
         repository: demo-apps
         revision: main
