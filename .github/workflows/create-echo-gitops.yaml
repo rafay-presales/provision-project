@@ -111,7 +111,7 @@ jobs:
         sed -i "s/REPLACE_CLUSTER_NAME/$CLUSTER_NAME/g" namespace.yaml
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" namespace.yaml
         yq e -i ".metadata.name = \"$RCTL_PROJECT\"" namespace.yaml
-        rctl apply -f namespace.yaml
+        rctl apply -f namespace.yaml --wait
     - name: create-github-repo
       shell: bash
       env:
@@ -133,7 +133,7 @@ jobs:
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" repository.yaml
         yq e -i ".metadata.name = \"$RCTL_PROJECT\"" repository.yaml
         yq e -i ".spec.endpoint = \"https://github.com/rafay-presales/$RCTL_PROJECT.git\"" repository.yaml
-        rctl apply -f repository.yaml
+        rctl apply -f repository.yaml --wait
     - name: create-workload
       shell: bash
       run: |
