@@ -1,7 +1,8 @@
 kind: ClusterTemplateSnapshot
+apiVersion: infra.k8smgmt.io/v3
 metadata:
   description: ""
-  name: v2
+  name: v1
   project: api-team
   templateName: eks-cluster-template
 parameters:
@@ -24,8 +25,8 @@ parameters:
       allow: true
       values:
       - "1.25"
-      - "1.27"
       - "1.26"
+      - "1.27"
     restricted: true
 spec:
   blueprint: eks-presales
@@ -45,9 +46,9 @@ spec:
           externalDNS: false
           imageBuilder: false
       instanceTypes:
-      - t3.2xlarge
+      - t3.xlarge
       labels: {}
-      maxSize: 2
+      maxSize: 3
       minSize: 1
       name: default-ng
       privateNetworking: false
