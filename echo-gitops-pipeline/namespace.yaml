@@ -12,6 +12,9 @@ spec:
       max:
         cpu: 1000m
         memory: 2000Mi
+      min:
+        cpu: 100u
+        memory: 200Mi
   namespaceMeshPolicyParams: {}
   placement:
     labels:
@@ -20,3 +23,6 @@ spec:
   resourceQuotas:
     cpuLimits: 4000m
     memoryLimits: 8000Mi
+    pods: "20"
+    services: "10"
+    storageRequests: 100Gi
