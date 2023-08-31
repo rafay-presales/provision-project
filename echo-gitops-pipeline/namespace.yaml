@@ -3,6 +3,8 @@ kind: Namespace
 metadata:
   name: echo-team-dev
   project: REPLACE_PROJECT
+  labels:
+    shared-gateway-access: "true"
 spec:
   limitRange:
     container: {}

@@ -1,4 +1,4 @@
-name: create-echo-gitops
+name: naas-gitops
 
 on:
   workflow_call:
@@ -24,7 +24,7 @@ on:
         - gke
         - eks
       project:
-        description: 'new project'
+        description: 'new project and namespace'
         default: "echo-team"
       share-project:
         description: 'share project'
