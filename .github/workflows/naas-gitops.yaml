@@ -138,9 +138,8 @@ jobs:
         git checkout main
         git checkout -b stage
         git push origin stage
-
-
   create-naas-matrix:
+    needs: create-naas-base
     environment:
       name: ${{ inputs.rafay-environment }}
     runs-on: ubuntu-latest
