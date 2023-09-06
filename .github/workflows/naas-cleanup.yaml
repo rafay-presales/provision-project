@@ -18,14 +18,11 @@ on:
   workflow_dispatch:
     inputs:
       project:
-        description: 'project to create namespace'
+        description: 'project to cleanup naas'
         default: "naas"
       namespace:
         required: true
-        description: 'team/repo/namespace to create'
-      share-project:
-        description: 'share project'
-        default: "shared-infra-team"
+        description: 'team/repo/namespace to cleanup'
       rafay-environment:
         type: choice
         description: Rafay console environment
@@ -35,7 +32,6 @@ on:
 env:
   RCTL_PROJECT: ${{ inputs.project || 'naas' }}
   NAMESPACE_NAME: ${{ inputs.namespace }}
-  SHARE_PROJECT: ${{ inputs.share-project || 'shared-infra-team' }}
   CLUSTER_NAME: 'shared-infra-team-gke-73-demo'
   RAFAY_ENVIRONMENT: ${{ inputs.rafay-environment || 'preview' }}
 
@@ -76,10 +72,10 @@ jobs:
       uses: rafay-presales/rctl-setup@main
     - name: delete-user-group
       shell: bash
+      continue-on-error: true
       run: |
-        rctl delete user kurt.madel+$RCTL_PROJECT-$NAMESPACE_NAME@rafay.co
         rctl delete group $RCTL_PROJECT-$NAMESPACE_NAME
-        rctl delete groupassociation $RCTL_PROJECT-$NAMESPACE_NAME
+        rctl delete user kurt.madel+$RCTL_PROJECT-$NAMESPACE_NAME@rafay.co
     - name: delete-agent
       shell: bash
       run: |
