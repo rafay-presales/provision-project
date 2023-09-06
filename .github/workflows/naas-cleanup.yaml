@@ -63,6 +63,7 @@ jobs:
       continue-on-error: true
       run: |
         rctl delete group $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX-dev
+        rctl delete group $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX-stage
     - name: delete-agent
       shell: bash
       run: |
