@@ -61,8 +61,7 @@ jobs:
     - name: delete-user-group
       shell: bash
       run: |
-        rctl delete group $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX-dev
-        rctl delete group $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX-stage
+        rctl delete group $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX
     - name: delete-agent
       shell: bash
       run: |
