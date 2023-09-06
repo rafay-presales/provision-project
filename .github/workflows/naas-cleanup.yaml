@@ -87,12 +87,7 @@ jobs:
     - name: delete-workload
       shell: bash
       run: |
-        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" workload.yaml
-        yq e -i ".metadata.name = \"$NAMESPACE_NAME-workload\"" workload.yaml
-        yq e -i ".spec.artifact.artifact.repository = \"$NAMESPACE_NAME\"" workload.yaml
-        yq e -i ".spec.namespace = \"$NAMESPACE_NAME\"" workload.yaml
-        yq e -i ".spec.placement.selector = \"rafay.dev/clusterName=$CLUSTER_NAME\"" workload.yaml
-        rctl delete workload $NAMESPACE_NAME-workload -f workload.yaml
+        rctl delete workload $NAMESPACE_NAME-workload -p $RCTL_PROJECT --v3
     - name: delete-namespace
       shell: bash
       run: |
