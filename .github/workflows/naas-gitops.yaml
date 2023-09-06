@@ -154,7 +154,7 @@ jobs:
       shell: bash
       run: |
         rctl create group $RCTL_PROJECT-$NAMESPACE_NAME --desc "NaaS group for $NAMESPACE_NAME"
-        rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME --associateproject $RCTL_PROJECT --roles NAMESPACE_READ_ONLY --namespaces $NAMESPACE_NAME
+        rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME --associateproject $RCTL_PROJECT --roles NAMESPACE_READ_ONLY,WORKSPACE_READ_ONLY --namespaces $NAMESPACE_NAME
         rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME --associateusers kurt.madel+$RCTL_PROJECT-$USER_FIRST_NAME@rafay.co
         mkdir -p $REPO_NAME
     - id: update-app-repo
