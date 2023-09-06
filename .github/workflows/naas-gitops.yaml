@@ -1,4 +1,4 @@
-name: naas-gitops
+name: naas-self-service
 
 on:
   workflow_dispatch:
@@ -202,3 +202,7 @@ jobs:
       shell: bash
       run: |
         rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX --associateproject $RCTL_PROJECT --roles NAMESPACE_READ_ONLY,WORKSPACE_READ_ONLY --namespaces $NAMESPACE_NAME_PREFIX-dev,$NAMESPACE_NAME_PREFIX-stage
+    - name: start-dev-pipeline
+      shell: bash
+      run: |
+        rctl start pipeline $NAMESPACE_NAME_PREFIX-dev-pipeline -p $RCTL_PROJECT
