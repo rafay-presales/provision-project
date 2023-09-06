@@ -24,8 +24,11 @@ on:
         - gke
         - eks
       project:
-        description: 'new project and namespace'
-        default: "echo-team"
+        description: 'project to create namespace'
+        default: "naas"
+      namespace:
+        required: true
+        description: 'namespace to create'
       share-project:
         description: 'share project'
         default: "shared-infra-team"
@@ -37,10 +40,11 @@ on:
         - preview
       cluster-name:
         required: true
-        description: Cluster name to deploy system sync agent
+        description: Cluster name to deploy GitOps agent
         type: string
 env:
-  PROJECT: ${{ inputs.project || 'echo-team' }}
+  PROJECT: ${{ inputs.project || 'naas' }}
+  NAMESPACE: ${{ inputs.namespace }}
   SHARE_PROJECT: ${{ inputs.share-project || 'shared-infra-team' }}
   CLUSTER_TYPE: ${{ inputs.type || 'gke' }}
   CLUSTER_NAME: ${{ inputs.cluster-name }}
@@ -62,6 +66,7 @@ jobs:
       RCTL_PROJECT: ${{ inputs.project }}
       CLUSTER_TYPE: ${{ inputs.type }}
       CLUSTER_NAME: ${{ inputs.cluster-name }}
+      NAMESPACE_NAME: ${{ inputs.namespace }}
     steps:
     - name: checkout
       uses: actions/checkout@v3
@@ -81,7 +86,7 @@ jobs:
           --method DELETE \
           -H "Accept: application/vnd.github+json" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
-          /repos/rafay-presales/$RCTL_PROJECT
+          /repos/rafay-presales/$NAMESPACE_NAME
     - name: cluster-name-from-input
       if: ${{ inputs.cluster-name }}
       env:
@@ -110,7 +115,7 @@ jobs:
       run: |
         sed -i "s/REPLACE_CLUSTER_NAME/$CLUSTER_NAME/g" namespace.yaml
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" namespace.yaml
-        yq e -i ".metadata.name = \"$RCTL_PROJECT\"" namespace.yaml
+        yq e -i ".metadata.name = \"$NAMESPACE_NAME\"" namespace.yaml
         rctl apply -f namespace.yaml --wait
     - name: create-github-repo
       shell: bash
@@ -123,7 +128,7 @@ jobs:
           -H "X-GitHub-Api-Version: 2022-11-28" \
           /repos/rafay-presales/echo-demo-template/generate \
           -f owner='rafay-presales' \
-        -f name="$RCTL_PROJECT" \
+        -f name="$NAMESPACE_NAME" \
         -f description='A simple echo demo app manifest.' \
         -F include_all_branches=false \
         -F private=false 
@@ -131,16 +136,16 @@ jobs:
       shell: bash
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" repository.yaml
-        yq e -i ".metadata.name = \"$RCTL_PROJECT\"" repository.yaml
-        yq e -i ".spec.endpoint = \"https://github.com/rafay-presales/$RCTL_PROJECT.git\"" repository.yaml
+        yq e -i ".metadata.name = \"$NAMESPACE_NAME\"" repository.yaml
+        yq e -i ".spec.endpoint = \"https://github.com/rafay-presales/$NAMESPACE_NAME.git\"" repository.yaml
         rctl apply -f repository.yaml --wait
     - name: create-workload
       shell: bash
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" workload.yaml
-        yq e -i ".metadata.name = \"$RCTL_PROJECT-workload\"" workload.yaml
-        yq e -i ".spec.artifact.artifact.repository = \"$RCTL_PROJECT\"" workload.yaml
-        yq e -i ".spec.namespace = \"$RCTL_PROJECT\"" workload.yaml
+        yq e -i ".metadata.name = \"$NAMESPACE_NAME-workload\"" workload.yaml
+        yq e -i ".spec.artifact.artifact.repository = \"$NAMESPACE_NAME\"" workload.yaml
+        yq e -i ".spec.namespace = \"$NAMESPACE_NAME\"" workload.yaml
         yq e -i ".spec.placement.selector = \"rafay.dev/clusterName=$CLUSTER_NAME\"" workload.yaml
         rctl apply -f workload.yaml --wait
     - name: create-pipeline
@@ -149,15 +154,41 @@ jobs:
         GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" pipeline.yaml
-        yq e -i ".metadata.name = \"$RCTL_PROJECT-pipeline\"" pipeline.yaml
-        yq e -i ".spec.stages[0].config.workload = \"$RCTL_PROJECT-workload\"" pipeline.yaml
-        yq e -i ".spec.triggers[0].name = \"$RCTL_PROJECT-webhook\"" pipeline.yaml
-        sed -i "s/REPLACE_REPO_NAME/$RCTL_PROJECT/g" pipeline.yaml
+        yq e -i ".metadata.name = \"$NAMESPACE_NAME-pipeline\"" pipeline.yaml
+        yq e -i ".spec.stages[0].config.workload = \"$NAMESPACE_NAME-workload\"" pipeline.yaml
+        yq e -i ".spec.triggers[0].name = \"$NAMESPACE_NAME-webhook\"" pipeline.yaml
+        sed -i "s/REPLACE_REPO_NAME/$NAMESPACE_NAME/g" pipeline.yaml
         more pipeline.yaml
         rctl apply -f pipeline.yaml --wait
-        rctl get trigger -p $RCTL_PROJECT $RCTL_PROJECT-webhook -o yaml --v3 > trigger.yaml
+        rctl get trigger -p $RCTL_PROJECT $NAMESPACE_NAME-webhook -o yaml --v3 > trigger.yaml
         WEBHOOK_URL=$(yq '.triggerstatus.extra.webhook.webhookurl' trigger.yaml)
         WEBHOOK_SECRET=$(yq '.triggerstatus.extra.webhook.webhooksecret' trigger.yaml)
         echo '{"name":"web","active":true,"events":["push","pull_request","release"],"config":{"url":"'"$WEBHOOK_URL"'","secret":"'"$WEBHOOK_SECRET"'","content_type":"form","insecure_ssl":"0"}}' \
-          | gh api repos/rafay-presales/$RCTL_PROJECT/hooks --input - -X POST
+          | gh api repos/rafay-presales/$NAMESPACE_NAME/hooks --input - -X POST
+          mkdir -p $NAMESPACE_NAME
+    - name: create-group
+      shell: bash
+      run: |
+        rctl create user kurt.madel+$RCTL_PROJECT-$NAMESPACE_NAME@rafay.co
+        rctl create group $RCTL_PROJECT-$NAMESPACE_NAME --desc "NaaS group for $NAMESPACE_NAME"
+        rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME --associateproject $RCTL_PROJECTj --roles NAMESPACE_READ_ONLY --namespaces $NAMESPACE_NAME
+        rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME --associateusers kurt.madel+$RCTL_PROJECT-$NAMESPACE_NAME@rafay.co
+    - id: clone-echo-app-repo
+      name: clone-echo-app-repo
+      uses: actions/checkout@v3
+      with:
+        repository: rafay-presales/${{ env.NAMESPACE_NAME }}
+        token: ${{ steps.generate_token.outputs.token }}
+        path: ${{ env.NAMESPACE_NAME }}
+        ref: main
+    - name: update-echo-manifest
+      shell: bash
+      run: |
+        cd $NAMESPACE_NAME
+        git clone https://github.com/rafay-presales/$NAMESPACE_NAME.git .
+        sed -i "s/REPLACE_NAMESPACE_NAME/$NAMESPACE_NAME/g" echo.yaml
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git commit -m "update echo manifest"
+        git push
 

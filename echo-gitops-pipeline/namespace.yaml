@@ -1,7 +1,7 @@
 apiVersion: infra.k8smgmt.io/v3
 kind: Namespace
 metadata:
-  name: echo-team-dev
+  name: REPLACE_NAMESPACE
   project: REPLACE_PROJECT
   labels:
     shared-gateway-access: "true"
