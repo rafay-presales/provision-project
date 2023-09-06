@@ -98,7 +98,6 @@ jobs:
       shell: bash
       run: |
         rctl create group $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX --desc "NaaS group for $NAMESPACE_NAME_PREFIX"
-        rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX --associateproject $RCTL_PROJECT --roles NAMESPACE_READ_ONLY,WORKSPACE_READ_ONLY --namespaces $NAMESPACE_NAME_PREFIX-dev,$NAMESPACE_NAME_PREFIX-stage
         rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX --associateusers kurt.madel+$RCTL_PROJECT-$USER_FIRST_NAME@rafay.co
         mkdir -p $REPO_NAME
     - id: update-app-repo
@@ -158,6 +157,10 @@ jobs:
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" namespace.yaml
         yq e -i ".metadata.name = \"$NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}\"" namespace.yaml
         rctl apply -f namespace.yaml --wait
+    - name: create-group-namespace-association
+      shell: bash
+      run: |
+        rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX --associateproject $RCTL_PROJECT --roles NAMESPACE_READ_ONLY,WORKSPACE_READ_ONLY --namespaces $NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}
     - name: create-workload
       shell: bash
       run: |
