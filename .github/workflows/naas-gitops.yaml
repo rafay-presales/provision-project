@@ -169,6 +169,6 @@ jobs:
         sed -i "s/REPLACE_NAMESPACE_NAME/$NAMESPACE_NAME/g" echo.yaml
         git config user.name github-actions
         git config user.email github-actions@github.com
-        git commit -m "update echo manifest"
+        git commit -am "update echo manifest"
         git push
 
