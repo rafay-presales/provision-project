@@ -23,6 +23,10 @@ on:
       repo-name:
         required: true
         description: 'application repo to delete'
+      delete-repo:
+        type: boolean
+        description: 'delete app repo'
+        default: false
       app-environment:
         type: choice
         description: 'application environment to cleanup'
@@ -39,6 +43,7 @@ env:
   RCTL_PROJECT: ${{ inputs.project || 'naas' }}
   USER_FIRST_NAME: ${{ inputs.repo-name }}
   REPO_NAME: ${{ inputs.repo-name }}
+  DELETE_REPO: ${{ inputs.delete-repo || false }}
   APP_ENV: ${{ inputs.app-environment }}
   NAMESPACE_NAME: ${{ inputs.repo-name }}-${{ inputs.app-environment }}
   CLUSTER_NAME: 'shared-infra-team-gke-73-demo'
@@ -67,6 +72,7 @@ jobs:
         app_id: ${{ secrets.PRESALES_GITHUB_APP_ID }}
         private_key: ${{ secrets.PRESALES_GITHUB_APP_KEY }}
     - name: delete-github-repo
+      if: ${{ github.env.DELETE_REPO }}
       shell: bash
       continue-on-error: true
       env:
