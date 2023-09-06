@@ -22,7 +22,7 @@ on:
         default: "naas"
       namespace:
         required: true
-        description: 'namespace to create'
+        description: 'team/repo/namespace to create'
       share-project:
         description: 'share project'
         default: "shared-infra-team"
