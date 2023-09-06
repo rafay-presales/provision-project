@@ -1,20 +1,6 @@
 name: naas-gitops
 
 on:
-  workflow_call:
-    inputs:
-      project:
-        required: true
-        type: string
-      type:
-        required: true
-        type: string
-      rafay-environment:
-        required: true
-        type: string
-      cluster-name:
-        required: true
-        type: string
   workflow_dispatch:
     inputs:
       project:
@@ -163,6 +149,8 @@ jobs:
       with:
         app_id: ${{ secrets.PRESALES_GITHUB_APP_ID }}
         private_key: ${{ secrets.PRESALES_GITHUB_APP_KEY }}
+    - name: Setup rctl
+      uses: rafay-presales/rctl-setup@main
     - name: create-namespace
       shell: bash
       run: |
