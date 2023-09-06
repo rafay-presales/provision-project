@@ -149,7 +149,7 @@ jobs:
     - name: create-group
       shell: bash
       run: |
-        rctl create user kurt.madel+$RCTL_PROJECT-$NAMESPACE_NAME@rafay.co --console $NAMESPACE_NAME, RCTL_PROJECT
+        rctl create user kurt.madel+$RCTL_PROJECT-$NAMESPACE_NAME@rafay.co --console $NAMESPACE_NAME,$RCTL_PROJECT
         rctl create group $RCTL_PROJECT-$NAMESPACE_NAME --desc "NaaS group for $NAMESPACE_NAME"
         rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME --associateproject $RCTL_PROJECT --roles NAMESPACE_READ_ONLY --namespaces $NAMESPACE_NAME
         rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME --associateusers kurt.madel+$RCTL_PROJECT-$NAMESPACE_NAME@rafay.co
