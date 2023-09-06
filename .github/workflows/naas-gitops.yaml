@@ -23,12 +23,6 @@ on:
       repo-name:
         required: true
         description: 'application name'
-      app-environment:
-        type: choice
-        description: application target environment
-        options: 
-        - dev
-        - stage
       share-project:
         description: 'share project'
         default: "shared-infra-team"
@@ -42,14 +36,13 @@ env:
   RCTL_PROJECT: ${{ inputs.project || 'naas' }}
   USER_FIRST_NAME: ${{ inputs.repo-name }}
   REPO_NAME: ${{ inputs.repo-name }}
-  APP_ENV: ${{ inputs.app-environment }}
-  NAMESPACE_NAME: ${{ inputs.repo-name }}-${{ inputs.app-environment }}
+  NAMESPACE_NAME_PREFIX: ${{ inputs.repo-name }}
   SHARE_PROJECT: ${{ inputs.share-project || 'shared-infra-team' }}
   CLUSTER_NAME: 'shared-infra-team-gke-73-demo'
   RAFAY_ENVIRONMENT: ${{ inputs.rafay-environment || 'preview' }}
 
 jobs:
-  create-naas-gitops:
+  create-naas-base:
     environment:
       name: ${{ inputs.rafay-environment }}
     runs-on: ubuntu-latest
@@ -85,16 +78,9 @@ jobs:
       shell: bash
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" agent.yaml
-        yq e -i ".metadata.name = \"$NAMESPACE_NAME-gitops-agent\"" agent.yaml
+        yq e -i ".metadata.name = \"$NAMESPACE_NAME_PREFIX-gitops-agent\"" agent.yaml
         yq e -i ".spec.cluster.name = \"$CLUSTER_NAME\"" agent.yaml
         rctl apply -f agent.yaml
-    - name: create-namespace
-      shell: bash
-      run: |
-        sed -i "s/REPLACE_CLUSTER_NAME/$CLUSTER_NAME/g" namespace.yaml
-        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" namespace.yaml
-        yq e -i ".metadata.name = \"$NAMESPACE_NAME\"" namespace.yaml
-        rctl apply -f namespace.yaml --wait
     - name: create-github-repo
       shell: bash
       env:
@@ -108,7 +94,7 @@ jobs:
           -f owner='rafay-presales' \
         -f name="$REPO_NAME" \
         -f description='A simple echo demo app manifest.' \
-        -F include_all_branches=true \
+        -F include_all_branches=false \
         -F private=false 
     - name: create-repository
       shell: bash
@@ -117,34 +103,6 @@ jobs:
         yq e -i ".metadata.name = \"$REPO_NAME\"" repository.yaml
         yq e -i ".spec.endpoint = \"https://github.com/rafay-presales/$REPO_NAME.git\"" repository.yaml
         rctl apply -f repository.yaml --wait
-    - name: create-workload
-      shell: bash
-      run: |
-        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" workload.yaml
-        yq e -i ".metadata.name = \"$NAMESPACE_NAME-workload\"" workload.yaml
-        yq e -i ".spec.artifact.artifact.repository = \"$REPO_NAME\"" workload.yaml
-        yq e -i ".spec.artifact.artifact.revision = \"$APP_ENV\"" workload.yaml
-        yq e -i ".spec.namespace = \"$NAMESPACE_NAME\"" workload.yaml
-        yq e -i ".spec.placement.selector = \"rafay.dev/clusterName=$CLUSTER_NAME\"" workload.yaml
-        rctl apply -f workload.yaml --wait
-    - name: create-pipeline
-      shell: bash
-      env:
-        GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-      run: |
-        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" pipeline.yaml
-        yq e -i ".metadata.name = \"$NAMESPACE_NAME-pipeline\"" pipeline.yaml
-        yq e -i ".spec.stages[0].config.workload = \"$NAMESPACE_NAME-workload\"" pipeline.yaml
-        yq e -i ".spec.triggers[0].name = \"$NAMESPACE_NAME-webhook\"" pipeline.yaml
-        sed -i "s/REPLACE_REPO_NAME/$REPO_NAME/g" pipeline.yaml
-        sed -i "s/REPLACE_REVISION/$APP_ENV/g" pipeline.yaml
-        more pipeline.yaml
-        rctl apply -f pipeline.yaml --wait
-        rctl get trigger -p $RCTL_PROJECT $NAMESPACE_NAME-webhook -o yaml --v3 > trigger.yaml
-        WEBHOOK_URL=$(yq '.triggerstatus.extra.webhook.webhookurl' trigger.yaml)
-        WEBHOOK_SECRET=$(yq '.triggerstatus.extra.webhook.webhooksecret' trigger.yaml)
-        echo '{"name":"web","active":true,"events":["push","pull_request","release"],"config":{"url":"'"$WEBHOOK_URL"'","secret":"'"$WEBHOOK_SECRET"'","content_type":"form","insecure_ssl":"0"}}' \
-          | gh api repos/rafay-presales/$REPO_NAME/hooks --input - -X POST
     - name: create-user
       shell: bash
       continue-on-error: true
@@ -153,9 +111,9 @@ jobs:
     - name: create-group-with-association
       shell: bash
       run: |
-        rctl create group $RCTL_PROJECT-$NAMESPACE_NAME --desc "NaaS group for $NAMESPACE_NAME"
-        rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME --associateproject $RCTL_PROJECT --roles NAMESPACE_READ_ONLY,WORKSPACE_READ_ONLY --namespaces $NAMESPACE_NAME
-        rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME --associateusers kurt.madel+$RCTL_PROJECT-$USER_FIRST_NAME@rafay.co
+        rctl create group $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX --desc "NaaS group for $NAMESPACE_NAME_PREFIX"
+        rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX --associateproject $RCTL_PROJECT --roles NAMESPACE_READ_ONLY,WORKSPACE_READ_ONLY --namespaces $NAMESPACE_NAME_PREFIX-dev,$NAMESPACE_NAME_PREFIX-stage
+        rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX --associateusers kurt.madel+$RCTL_PROJECT-$USER_FIRST_NAME@rafay.co
         mkdir -p $REPO_NAME
     - id: update-app-repo
       name: update-app-repo
@@ -169,16 +127,75 @@ jobs:
       shell: bash
       working-directory: ${{ env.REPO_NAME }}
       run: |
-        ls -la
         git config user.name github-actions
         git config user.email github-actions@github.com
         git checkout main
-        sed -i "s/REPLACE_NAMESPACE_NAME/$NAMESPACE_NAME/g" echo.yaml
+        sed -i "s/REPLACE_NAMESPACE_NAME/$NAMESPACE_NAME_PREFIX/g" echo.yaml
         git commit -am "update echo manifest"
         git push origin main
         git checkout -b dev
-        sed -i "s/REPLACE_NAMESPACE_NAME/$NAMESPACE_NAME/g" echo.yaml
-        git commit -am "update echo manifest"
         git push origin dev
+        git checkout main
+        git checkout -b stage
+        git push origin stage
 
 
+  create-naas-matrix:
+    environment:
+      name: ${{ inputs.rafay-environment }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app-env: [dev,stage]
+    defaults:
+      run:
+        working-directory: echo-gitops-pipeline
+    env:
+      RCTL_REST_ENDPOINT: ${{ secrets.RCTL_REST_ENDPOINT }}
+      RCTL_OPS_ENDPOINT: ${{ secrets.RCTL_OPS_ENDPOINT }}
+      RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
+      RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+    - name: Generate a GitHub App token
+      id: generate_token
+      uses: tibdex/github-app-token@v1.8.0
+      with:
+        app_id: ${{ secrets.PRESALES_GITHUB_APP_ID }}
+        private_key: ${{ secrets.PRESALES_GITHUB_APP_KEY }}
+    - name: create-namespace
+      shell: bash
+      run: |
+        sed -i "s/REPLACE_CLUSTER_NAME/$CLUSTER_NAME/g" namespace.yaml
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" namespace.yaml
+        yq e -i ".metadata.name = \"$NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}\"" namespace.yaml
+        rctl apply -f namespace.yaml --wait
+    - name: create-workload
+      shell: bash
+      run: |
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" workload.yaml
+        yq e -i ".metadata.name = \"$NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}-workload\"" workload.yaml
+        yq e -i ".spec.artifact.artifact.repository = \"$REPO_NAME\"" workload.yaml
+        yq e -i ".spec.artifact.artifact.revision = \"${{ matrix.app-env }}\"" workload.yaml
+        yq e -i ".spec.namespace = \"$NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}\"" workload.yaml
+        yq e -i ".spec.placement.selector = \"rafay.dev/clusterName=$CLUSTER_NAME\"" workload.yaml
+        rctl apply -f workload.yaml --wait
+    - name: create-pipeline
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+      run: |
+        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" pipeline.yaml
+        yq e -i ".metadata.name = \"$NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}-pipeline\"" pipeline.yaml
+        yq e -i ".spec.stages[0].config.workload = \"$NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}-workload\"" pipeline.yaml
+        yq e -i ".spec.triggers[0].name = \"$NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}-webhook\"" pipeline.yaml
+        sed -i "s/REPLACE_REPO_NAME/$REPO_NAME/g" pipeline.yaml
+        sed -i "s/REPLACE_REVISION/${{ matrix.app-env }}/g" pipeline.yaml
+        more pipeline.yaml
+        rctl apply -f pipeline.yaml --wait
+        rctl get trigger -p $RCTL_PROJECT $NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}-webhook -o yaml --v3 > trigger.yaml
+        WEBHOOK_URL=$(yq '.triggerstatus.extra.webhook.webhookurl' trigger.yaml)
+        WEBHOOK_SECRET=$(yq '.triggerstatus.extra.webhook.webhooksecret' trigger.yaml)
+        echo '{"name":"web","active":true,"events":["push","pull_request","release"],"config":{"url":"'"$WEBHOOK_URL"'","secret":"'"$WEBHOOK_SECRET"'","content_type":"form","insecure_ssl":"0"}}' \
+          | gh api repos/rafay-presales/$REPO_NAME/hooks --input - -X POST
