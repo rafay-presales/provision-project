@@ -17,12 +17,6 @@ on:
         type: string
   workflow_dispatch:
     inputs:
-      type:
-        type: choice
-        description: Type of cluster to target
-        options: 
-        - gke
-        - eks
       project:
         description: 'project to create namespace'
         default: "naas"
@@ -36,18 +30,14 @@ on:
         type: choice
         description: Rafay console environment
         options: 
-        - prod
         - preview
-      cluster-name:
-        required: true
-        description: Cluster name to deploy GitOps agent
-        type: string
+        - prod
 env:
   PROJECT: ${{ inputs.project || 'naas' }}
   NAMESPACE: ${{ inputs.namespace }}
   SHARE_PROJECT: ${{ inputs.share-project || 'shared-infra-team' }}
-  CLUSTER_TYPE: ${{ inputs.type || 'gke' }}
-  CLUSTER_NAME: ${{ inputs.cluster-name }}
+  CLUSTER_TYPE: 'gke'
+  CLUSTER_NAME: 'shared-infra-team-gke-73-demo'
   RAFAY_ENVIRONMENT: ${{ inputs.rafay-environment || 'prod' }}
 
 jobs:
@@ -65,7 +55,7 @@ jobs:
       RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
       RCTL_PROJECT: ${{ inputs.project }}
       CLUSTER_TYPE: ${{ inputs.type }}
-      CLUSTER_NAME: ${{ inputs.cluster-name }}
+      CLUSTER_NAME: 'shared-infra-team-gke-73-demo'
       NAMESPACE_NAME: ${{ inputs.namespace }}
     steps:
     - name: checkout
@@ -87,11 +77,6 @@ jobs:
           -H "Accept: application/vnd.github+json" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           /repos/rafay-presales/$NAMESPACE_NAME
-    - name: cluster-name-from-input
-      if: ${{ inputs.cluster-name }}
-      env:
-        CLUSTER_NAME: ${{ inputs.cluster-name }}
-      run: echo "CLUSTER_NAME=$CLUSTER_NAME" >> $GITHUB_ENV
     - name: Setup rctl
       uses: rafay-presales/rctl-setup@main
     - name: create-project
