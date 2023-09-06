@@ -169,9 +169,16 @@ jobs:
       shell: bash
       run: |
         cd $REPO_NAME
-        sed -i "s/REPLACE_NAMESPACE_NAME/$NAMESPACE_NAME/g" echo.yaml
+        ls -la
         git config user.name github-actions
         git config user.email github-actions@github.com
+        git checkout main
+        sed -i "s/REPLACE_NAMESPACE_NAME/$NAMESPACE_NAME/g" echo.yaml
         git commit -am "update echo manifest"
-        git push
+        git push origin main
+        git checkout -b dev
+        sed -i "s/REPLACE_NAMESPACE_NAME/$NAMESPACE_NAME/g" echo.yaml
+        git commit -am "update echo manifest"
+        git push origin dev
+
 
