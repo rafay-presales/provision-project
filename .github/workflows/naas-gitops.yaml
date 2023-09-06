@@ -20,12 +20,12 @@ on:
       project:
         description: 'project to create namespace'
         default: "naas"
-      namespace:
+      repo-name:
         required: true
-        description: 'team/repo/namespace to create'
+        description: 'application name'
       app-environment:
         type: choice
-        description: Namespace target environment
+        description: application target environment
         options: 
         - dev
         - stage
@@ -40,14 +40,16 @@ on:
         - prod
 env:
   RCTL_PROJECT: ${{ inputs.project || 'naas' }}
-  USER_FIRST_NAME: ${{ inputs.namespace }}
-  NAMESPACE_NAME: ${{ inputs.namespace }}-${{ inputs.app-environment }}
+  USER_FIRST_NAME: ${{ inputs.repo-name }}
+  REPO_NAME: ${{ inputs.repo-name }}
+  APP_ENV: ${{ inputs.app-environment }}
+  NAMESPACE_NAME: ${{ inputs.repo-name }}-${{ inputs.app-environment }}
   SHARE_PROJECT: ${{ inputs.share-project || 'shared-infra-team' }}
   CLUSTER_NAME: 'shared-infra-team-gke-73-demo'
   RAFAY_ENVIRONMENT: ${{ inputs.rafay-environment || 'preview' }}
 
 jobs:
-  create-echo-gitops:
+  create-naas-gitops:
     environment:
       name: ${{ inputs.rafay-environment }}
     runs-on: ubuntu-latest
@@ -68,17 +70,6 @@ jobs:
       with:
         app_id: ${{ secrets.PRESALES_GITHUB_APP_ID }}
         private_key: ${{ secrets.PRESALES_GITHUB_APP_KEY }}
-    - name: delete-github-repo
-      shell: bash
-      continue-on-error: true
-      env:
-        GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-      run: |
-        gh api \
-          --method DELETE \
-          -H "Accept: application/vnd.github+json" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          /repos/rafay-presales/$NAMESPACE_NAME
     - name: Setup rctl
       uses: rafay-presales/rctl-setup@main
     - name: create-project
@@ -115,23 +106,24 @@ jobs:
           -H "X-GitHub-Api-Version: 2022-11-28" \
           /repos/rafay-presales/echo-demo-template/generate \
           -f owner='rafay-presales' \
-        -f name="$NAMESPACE_NAME" \
+        -f name="$REPO_NAME" \
         -f description='A simple echo demo app manifest.' \
-        -F include_all_branches=false \
+        -F include_all_branches=true \
         -F private=false 
     - name: create-repository
       shell: bash
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" repository.yaml
-        yq e -i ".metadata.name = \"$NAMESPACE_NAME\"" repository.yaml
-        yq e -i ".spec.endpoint = \"https://github.com/rafay-presales/$NAMESPACE_NAME.git\"" repository.yaml
+        yq e -i ".metadata.name = \"$REPO_NAME\"" repository.yaml
+        yq e -i ".spec.endpoint = \"https://github.com/rafay-presales/$REPO_NAME.git\"" repository.yaml
         rctl apply -f repository.yaml --wait
     - name: create-workload
       shell: bash
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" workload.yaml
         yq e -i ".metadata.name = \"$NAMESPACE_NAME-workload\"" workload.yaml
-        yq e -i ".spec.artifact.artifact.repository = \"$NAMESPACE_NAME\"" workload.yaml
+        yq e -i ".spec.artifact.artifact.repository = \"$REPO_NAME\"" workload.yaml
+        yq e -i ".spec.artifact.artifact.revision = \"$APP_ENV\"" workload.yaml
         yq e -i ".spec.namespace = \"$NAMESPACE_NAME\"" workload.yaml
         yq e -i ".spec.placement.selector = \"rafay.dev/clusterName=$CLUSTER_NAME\"" workload.yaml
         rctl apply -f workload.yaml --wait
@@ -144,14 +136,15 @@ jobs:
         yq e -i ".metadata.name = \"$NAMESPACE_NAME-pipeline\"" pipeline.yaml
         yq e -i ".spec.stages[0].config.workload = \"$NAMESPACE_NAME-workload\"" pipeline.yaml
         yq e -i ".spec.triggers[0].name = \"$NAMESPACE_NAME-webhook\"" pipeline.yaml
-        sed -i "s/REPLACE_REPO_NAME/$NAMESPACE_NAME/g" pipeline.yaml
+        sed -i "s/REPLACE_REPO_NAME/$REPO_NAME/g" pipeline.yaml
+        sed -i "s/REPLACE_REVISION/$APP_ENV/g" pipeline.yaml
         more pipeline.yaml
         rctl apply -f pipeline.yaml --wait
         rctl get trigger -p $RCTL_PROJECT $NAMESPACE_NAME-webhook -o yaml --v3 > trigger.yaml
         WEBHOOK_URL=$(yq '.triggerstatus.extra.webhook.webhookurl' trigger.yaml)
         WEBHOOK_SECRET=$(yq '.triggerstatus.extra.webhook.webhooksecret' trigger.yaml)
         echo '{"name":"web","active":true,"events":["push","pull_request","release"],"config":{"url":"'"$WEBHOOK_URL"'","secret":"'"$WEBHOOK_SECRET"'","content_type":"form","insecure_ssl":"0"}}' \
-          | gh api repos/rafay-presales/$NAMESPACE_NAME/hooks --input - -X POST
+          | gh api repos/rafay-presales/$REPO_NAME/hooks --input - -X POST
     - name: create-user
       shell: bash
       continue-on-error: true
@@ -163,19 +156,19 @@ jobs:
         rctl create group $RCTL_PROJECT-$NAMESPACE_NAME --desc "NaaS group for $NAMESPACE_NAME"
         rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME --associateproject $RCTL_PROJECT --roles NAMESPACE_READ_ONLY --namespaces $NAMESPACE_NAME
         rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME --associateusers kurt.madel+$RCTL_PROJECT-$USER_FIRST_NAME@rafay.co
-        mkdir -p $NAMESPACE_NAME
-    - id: clone-echo-app-repo
-      name: clone-echo-app-repo
+        mkdir -p $REPO_NAME
+    - id: update-app-repo
+      name: update-app-repo
       uses: actions/checkout@v3
       with:
-        repository: rafay-presales/${{ env.NAMESPACE_NAME }}
+        repository: rafay-presales/${{ env.REPO_NAME }}
         token: ${{ steps.generate_token.outputs.token }}
-        path: ${{ env.NAMESPACE_NAME }}
+        path: ${{ env.REPO_NAME }}
         ref: main
     - name: update-echo-manifest
       shell: bash
       run: |
-        cd $NAMESPACE_NAME
+        cd $REPO_NAME
         sed -i "s/REPLACE_NAMESPACE_NAME/$NAMESPACE_NAME/g" echo.yaml
         git config user.name github-actions
         git config user.email github-actions@github.com

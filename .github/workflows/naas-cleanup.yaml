@@ -20,9 +20,15 @@ on:
       project:
         description: 'project to cleanup naas'
         default: "naas"
-      namespace:
+      repo-name:
         required: true
-        description: 'team/repo/namespace to cleanup'
+        description: 'application repo to delete'
+      app-environment:
+        type: choice
+        description: 'application environment to cleanup'
+        options: 
+        - dev
+        - stage
       rafay-environment:
         type: choice
         description: Rafay console environment
@@ -31,12 +37,15 @@ on:
         - prod
 env:
   RCTL_PROJECT: ${{ inputs.project || 'naas' }}
-  NAMESPACE_NAME: ${{ inputs.namespace }}
+  USER_FIRST_NAME: ${{ inputs.repo-name }}
+  REPO_NAME: ${{ inputs.repo-name }}
+  APP_ENV: ${{ inputs.app-environment }}
+  NAMESPACE_NAME: ${{ inputs.repo-name }}-${{ inputs.app-environment }}
   CLUSTER_NAME: 'shared-infra-team-gke-73-demo'
   RAFAY_ENVIRONMENT: ${{ inputs.rafay-environment || 'preview' }}
 
 jobs:
-  create-echo-gitops:
+  cleanup-naas-gitops:
     environment:
       name: ${{ inputs.rafay-environment }}
     runs-on: ubuntu-latest
@@ -67,7 +76,7 @@ jobs:
           --method DELETE \
           -H "Accept: application/vnd.github+json" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
-          /repos/rafay-presales/$NAMESPACE_NAME
+          /repos/rafay-presales/$REPO_NAME
     - name: Setup rctl
       uses: rafay-presales/rctl-setup@main
     - name: delete-user-group
@@ -95,4 +104,4 @@ jobs:
     - name: delete-repository
       shell: bash
       run: |
-        rctl delete repository $NAMESPACE_NAME -p $RCTL_PROJECT
+        rctl delete repository $REPO_NAME -p $RCTL_PROJECT

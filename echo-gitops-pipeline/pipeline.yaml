@@ -18,6 +18,6 @@ spec:
         - name: echo.yaml
         provider: Github
         repository: REPLACE_REPO_NAME
-        revision: main
+        revision: REPLACE_REVISION
     name: echo-app-webhook
     type: Webhook

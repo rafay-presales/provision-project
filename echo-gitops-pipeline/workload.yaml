@@ -8,8 +8,8 @@ spec:
       paths:
       - name: echo.yaml
       repository: demo-apps
-      revision: main
+      revision: REPLACE_REVISION
     type: Yaml
   namespace: echo-team-dev
   placement:
-    selector: rafay.dev/clusterName=api-team-gke-49-demo
+    selector: REPLACE_CLUSTER_NAME
