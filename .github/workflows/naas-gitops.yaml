@@ -157,10 +157,6 @@ jobs:
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" namespace.yaml
         yq e -i ".metadata.name = \"$NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}\"" namespace.yaml
         rctl apply -f namespace.yaml --wait
-    - name: create-group-namespace-association
-      shell: bash
-      run: |
-        rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX --associateproject $RCTL_PROJECT --roles NAMESPACE_READ_ONLY,WORKSPACE_READ_ONLY --namespaces $NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}
     - name: create-workload
       shell: bash
       run: |
