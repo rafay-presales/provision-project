@@ -84,7 +84,6 @@ jobs:
       continue-on-error: true
       run: |
         rctl delete group $RCTL_PROJECT-$NAMESPACE_NAME
-        rctl delete user kurt.madel+$RCTL_PROJECT-$NAMESPACE_NAME@rafay.co
     - name: delete-agent
       shell: bash
       run: |
