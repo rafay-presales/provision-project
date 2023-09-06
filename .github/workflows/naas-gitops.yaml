@@ -33,12 +33,11 @@ on:
         - preview
         - prod
 env:
-  PROJECT: ${{ inputs.project || 'naas' }}
-  NAMESPACE: ${{ inputs.namespace }}
+  RCTL_PROJECT: ${{ inputs.project || 'naas' }}
+  NAMESPACE_NAME: ${{ inputs.namespace }}
   SHARE_PROJECT: ${{ inputs.share-project || 'shared-infra-team' }}
-  CLUSTER_TYPE: 'gke'
   CLUSTER_NAME: 'shared-infra-team-gke-73-demo'
-  RAFAY_ENVIRONMENT: ${{ inputs.rafay-environment || 'prod' }}
+  RAFAY_ENVIRONMENT: ${{ inputs.rafay-environment || 'preview' }}
 
 jobs:
   create-echo-gitops:
@@ -53,10 +52,6 @@ jobs:
       RCTL_OPS_ENDPOINT: ${{ secrets.RCTL_OPS_ENDPOINT }}
       RCTL_API_KEY: ${{ secrets.RCTL_API_KEY }}
       RCTL_API_SECRET: ${{ secrets.RCTL_API_SECRET }}
-      RCTL_PROJECT: ${{ inputs.project }}
-      CLUSTER_TYPE: ${{ inputs.type }}
-      CLUSTER_NAME: 'shared-infra-team-gke-73-demo'
-      NAMESPACE_NAME: ${{ inputs.namespace }}
     steps:
     - name: checkout
       uses: actions/checkout@v3
@@ -92,7 +87,7 @@ jobs:
       shell: bash
       run: |
         yq e -i ".metadata.project = \"$RCTL_PROJECT\"" agent.yaml
-        yq e -i ".metadata.name = \"$CLUSTER_TYPE-gitops-agent\"" agent.yaml
+        yq e -i ".metadata.name = \"$NAMESPACE_NAME-gitops-agent\"" agent.yaml
         yq e -i ".spec.cluster.name = \"$CLUSTER_NAME\"" agent.yaml
         rctl apply -f agent.yaml
     - name: create-namespace
