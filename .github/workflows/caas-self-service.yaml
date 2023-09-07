@@ -32,8 +32,8 @@ on:
         type: choice
         description: Rafay console environment
         options: 
-        - prod
         - preview
+        - prod
       cluster-name:
         required: false
         description: Override default cluster name of `{project}-{type}-{github.run_number}`
