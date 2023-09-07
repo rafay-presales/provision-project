@@ -22,7 +22,7 @@ on:
 env:
   RCTL_PROJECT: ${{ inputs.project || 'naas' }}
   USER_FIRST_NAME: ${{ inputs.repo-name }}
-  DELETE_USER: ${{ github.event.inputs.delete-user || false }}
+  DELETE_USER: ${{ inputs.delete-user }}
   REPO_NAME: ${{ inputs.repo-name }}
   NAMESPACE_NAME_PREFIX: ${{ inputs.repo-name }}
   CLUSTER_NAME: 'shared-infra-team-gke-73-demo'
