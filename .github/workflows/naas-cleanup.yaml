@@ -11,13 +11,18 @@ on:
         description: 'application repo to delete'
       rafay-environment:
         type: choice
-        description: Rafay console environment
+        description: rafay console environment
         options: 
         - preview
         - prod
+      delete-user:
+        type: boolean
+        description: 'set to true to delete naas user'
+        default: false
 env:
   RCTL_PROJECT: ${{ inputs.project || 'naas' }}
   USER_FIRST_NAME: ${{ inputs.repo-name }}
+  DELETE_USER: ${{ github.event.inputs.delete-user || false }}
   REPO_NAME: ${{ inputs.repo-name }}
   NAMESPACE_NAME_PREFIX: ${{ inputs.repo-name }}
   CLUSTER_NAME: 'shared-infra-team-gke-73-demo'
@@ -62,6 +67,11 @@ jobs:
       shell: bash
       run: |
         rctl delete group $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX
+    - name: delete-user
+      if: ${{ github.env.SYSTEM_SYNC }}
+      shell: bash
+      run: |
+        rctl delete user kurt.madel+$RCTL_PROJECT-$USER_FIRST_NAME@rafay.co
     - name: delete-agent
       shell: bash
       run: |
