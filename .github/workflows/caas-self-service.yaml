@@ -1,19 +1,5 @@
 name: caas-self-service
 on:
-  workflow_call:
-    inputs:
-      project:
-        required: true
-        type: string
-      type:
-        required: true
-        type: string
-      rafay-environment:
-        required: true
-        type: string
-      cluster-name:
-        required: false
-        type: string
   workflow_dispatch:
     inputs:
       type:
