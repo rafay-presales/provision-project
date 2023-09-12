@@ -54,7 +54,7 @@ jobs:
     - name: create-project
       shell: bash
       run: |
-        yq e -i ".metadata.project = \"$NAAS_PROJECT\"" project.yaml
+        yq e -i ".metadata.name = \"$NAAS_PROJECT\"" project.yaml
         rctl apply -f project.yaml --wait
     - name: share-cluster
       shell: bash
