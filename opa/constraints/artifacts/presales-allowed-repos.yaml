@@ -10,4 +10,4 @@ spec:
         kinds: ["Pod"]
   parameters:
     repos:
-      - "us-central1-docker.pkg.dev/demos-249423/presales"
+      - "ghcr.io/rafay-presales/"
