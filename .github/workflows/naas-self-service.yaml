@@ -19,7 +19,7 @@ on:
         - preview
         - prod
 env:
-  RCTL_PROJECT: ${{ inputs.project || 'naas' }}
+  NAAS_PROJECT: ${{ inputs.project || 'naas' }}
   USER_FIRST_NAME: ${{ inputs.repo-name }}
   REPO_NAME: ${{ inputs.repo-name }}
   NAMESPACE_NAME_PREFIX: ${{ inputs.repo-name }}
@@ -54,16 +54,16 @@ jobs:
     - name: create-project
       shell: bash
       run: |
-        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" project.yaml
+        yq e -i ".metadata.project = \"$NAAS_PROJECT\"" project.yaml
         rctl apply -f project.yaml
     - name: share-cluster
       shell: bash
       run: | 
-        rctl share cluster $CLUSTER_NAME --projects $RCTL_PROJECT --project $SHARE_PROJECT --wait
+        rctl share cluster $CLUSTER_NAME --projects $NAAS_PROJECT --project $SHARE_PROJECT --wait
     - name: create-agent
       shell: bash
       run: |
-        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" agent.yaml
+        yq e -i ".metadata.project = \"$NAAS_PROJECT\"" agent.yaml
         yq e -i ".metadata.name = \"$NAMESPACE_NAME_PREFIX-gitops-agent\"" agent.yaml
         yq e -i ".spec.cluster.name = \"$CLUSTER_NAME\"" agent.yaml
         rctl apply -f agent.yaml
@@ -85,7 +85,7 @@ jobs:
     - name: create-repository
       shell: bash
       run: |
-        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" repository.yaml
+        yq e -i ".metadata.project = \"$NAAS_PROJECT\"" repository.yaml
         yq e -i ".metadata.name = \"$REPO_NAME\"" repository.yaml
         yq e -i ".spec.endpoint = \"https://github.com/rafay-presales/$REPO_NAME.git\"" repository.yaml
         rctl apply -f repository.yaml --wait
@@ -93,12 +93,12 @@ jobs:
       shell: bash
       continue-on-error: true
       run: |
-        rctl create user kurt.madel+$RCTL_PROJECT-$USER_FIRST_NAME@rafay.co --console $USER_FIRST_NAME,$RCTL_PROJECT
+        rctl create user kurt.madel+$NAAS_PROJECT-$USER_FIRST_NAME@rafay.co --console $USER_FIRST_NAME,$NAAS_PROJECT
     - name: create-group-with-association
       shell: bash
       run: |
-        rctl create group $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX --desc "NaaS group for $NAMESPACE_NAME_PREFIX"
-        rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX --associateusers kurt.madel+$RCTL_PROJECT-$USER_FIRST_NAME@rafay.co
+        rctl create group $NAAS_PROJECT-$NAMESPACE_NAME_PREFIX --desc "NaaS group for $NAMESPACE_NAME_PREFIX"
+        rctl create groupassociation $NAAS_PROJECT-$NAMESPACE_NAME_PREFIX --associateusers kurt.madel+$NAAS_PROJECT-$USER_FIRST_NAME@rafay.co
         mkdir -p $REPO_NAME
     - id: update-app-repo
       name: update-app-repo
@@ -154,13 +154,13 @@ jobs:
       shell: bash
       run: |
         sed -i "s/REPLACE_CLUSTER_NAME/$CLUSTER_NAME/g" namespace.yaml
-        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" namespace.yaml
+        yq e -i ".metadata.project = \"$NAAS_PROJECT\"" namespace.yaml
         yq e -i ".metadata.name = \"$NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}\"" namespace.yaml
         rctl apply -f namespace.yaml --wait
     - name: create-workload
       shell: bash
       run: |
-        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" workload.yaml
+        yq e -i ".metadata.project = \"$NAAS_PROJECT\"" workload.yaml
         yq e -i ".metadata.name = \"$NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}-workload\"" workload.yaml
         yq e -i ".spec.artifact.artifact.repository = \"$REPO_NAME\"" workload.yaml
         yq e -i ".spec.artifact.artifact.revision = \"${{ matrix.app-env }}\"" workload.yaml
@@ -172,7 +172,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
       run: |
-        yq e -i ".metadata.project = \"$RCTL_PROJECT\"" pipeline.yaml
+        yq e -i ".metadata.project = \"$NAAS_PROJECT\"" pipeline.yaml
         yq e -i ".metadata.name = \"$NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}-pipeline\"" pipeline.yaml
         yq e -i ".spec.stages[0].config.workload = \"$NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}-workload\"" pipeline.yaml
         yq e -i ".spec.triggers[0].name = \"$NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}-webhook\"" pipeline.yaml
@@ -180,7 +180,7 @@ jobs:
         sed -i "s/REPLACE_REVISION/${{ matrix.app-env }}/g" pipeline.yaml
         more pipeline.yaml
         rctl apply -f pipeline.yaml --wait
-        rctl get trigger -p $RCTL_PROJECT $NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}-webhook -o yaml --v3 > trigger.yaml
+        rctl get trigger -p $NAAS_PROJECT $NAMESPACE_NAME_PREFIX-${{ matrix.app-env }}-webhook -o yaml --v3 > trigger.yaml
         WEBHOOK_URL=$(yq '.triggerstatus.extra.webhook.webhookurl' trigger.yaml)
         WEBHOOK_SECRET=$(yq '.triggerstatus.extra.webhook.webhooksecret' trigger.yaml)
         echo '{"name":"web","active":true,"events":["push","pull_request","release"],"config":{"url":"'"$WEBHOOK_URL"'","secret":"'"$WEBHOOK_SECRET"'","content_type":"form","insecure_ssl":"0"}}' \
@@ -201,8 +201,8 @@ jobs:
     - name: create-group-namespace-association
       shell: bash
       run: |
-        rctl create groupassociation $RCTL_PROJECT-$NAMESPACE_NAME_PREFIX --associateproject $RCTL_PROJECT --roles NAMESPACE_READ_ONLY,WORKSPACE_READ_ONLY --namespaces $NAMESPACE_NAME_PREFIX-dev,$NAMESPACE_NAME_PREFIX-stage
+        rctl create groupassociation $NAAS_PROJECT-$NAMESPACE_NAME_PREFIX --associateproject $NAAS_PROJECT --roles NAMESPACE_READ_ONLY,WORKSPACE_READ_ONLY --namespaces $NAMESPACE_NAME_PREFIX-dev,$NAMESPACE_NAME_PREFIX-stage
     - name: start-dev-pipeline
       shell: bash
       run: |
-        rctl start pipeline $NAMESPACE_NAME_PREFIX-dev-pipeline -p $RCTL_PROJECT
+        rctl start pipeline $NAMESPACE_NAME_PREFIX-dev-pipeline -p $NAAS_PROJECT
