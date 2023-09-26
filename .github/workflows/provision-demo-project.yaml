@@ -8,9 +8,6 @@ on:
       - 'main'
     paths:
       - '**.yaml'
-  schedule:
-    # Runs "Mon-Fri at 07:10 EDT"
-    - cron: '05 11 * * 1-5' 
   workflow_dispatch:
     inputs:
       type:
